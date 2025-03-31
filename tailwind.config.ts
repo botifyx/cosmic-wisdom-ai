@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,15 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Custom cosmic theme colors
+				cosmic: {
+					'deep-purple': '#6E59A5',
+					'bright-purple': '#8B5CF6',
+					'midnight': '#1A1F2C',
+					'gold': '#FEC6A1',
+					'soft-blue': '#D3E4FD',
+					'soft-pink': '#FFDEE2',
 				}
 			},
 			borderRadius: {
@@ -84,11 +94,25 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'float': {
+					'0%, 100%': { transform: 'translateY(0)' },
+					'50%': { transform: 'translateY(-10px)' }
+				},
+				'glow': {
+					'0%, 100%': { opacity: '1' },
+					'50%': { opacity: '0.7' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'float': 'float 6s ease-in-out infinite',
+				'glow': 'glow 3s ease-in-out infinite'
+			},
+			backgroundImage: {
+				'cosmic-gradient': 'linear-gradient(135deg, #1A1F2C 0%, #6E59A5 100%)',
+				'cosmic-radial': 'radial-gradient(circle, #8B5CF6 0%, #1A1F2C 100%)'
 			}
 		}
 	},
