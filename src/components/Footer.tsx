@@ -8,7 +8,8 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <h3 className="text-xl font-bold text-cosmic-gold mb-4">CosmicWisdom</h3>
+            <h3 className="text-xl font-bold text-cosmic-gold mb-4">TAINTRA</h3>
+            <p className="text-sm text-cosmic-bright-purple mb-2">The Future of Ancient Wisdom</p>
             <p className="text-gray-300 mb-4">
               Unlocking ancient wisdom with modern technology. AI meets traditional Indian knowledge for spiritual guidance.
             </p>
@@ -74,7 +75,7 @@ const Footer = () => {
         
         <div className="border-t border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between">
           <p className="text-gray-400 text-sm">
-            &copy; {new Date().getFullYear()} CosmicWisdom AI. All rights reserved.
+            &copy; {new Date().getFullYear()} TAINTRA. All rights reserved.
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <FooterLink to="/privacy">Privacy Policy</FooterLink>

@@ -18,7 +18,10 @@ const Navbar = () => {
           <div className="flex items-center">
             <Link to="/" className="flex items-center">
               <span className="text-xl font-bold text-cosmic-gold text-glow">
-                Cosmic<span className="text-cosmic-bright-purple">Wisdom</span>
+                TAINTRA
+              </span>
+              <span className="ml-2 text-xs text-cosmic-bright-purple hidden sm:inline-block">
+                The Future of Ancient Wisdom
               </span>
             </Link>
           </div>

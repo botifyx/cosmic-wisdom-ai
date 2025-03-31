@@ -19,8 +19,8 @@ const HeroSection = () => {
       
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-          <span className="block text-glow">Unlock Ancient Wisdom</span>
-          <span className="block text-cosmic-gold">With Modern AI</span>
+          <span className="block text-glow">TAINTRA</span>
+          <span className="block text-cosmic-gold">The Future of Ancient Wisdom</span>
         </h1>
         
         <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mb-8">
