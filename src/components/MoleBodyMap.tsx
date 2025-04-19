@@ -2,7 +2,7 @@
 import React from 'react';
 import { BodyPart, Gender } from '@/lib/moleology-data';
 import { Button } from '@/components/ui/button';
-import { Female, Male } from 'lucide-react';
+import { UserRound, UserCircle } from 'lucide-react';
 
 interface MoleBodyMapProps {
   gender: Gender;
@@ -27,7 +27,7 @@ const MoleBodyMap: React.FC<MoleBodyMapProps> = ({
           className={gender === 'male' ? 'bg-cosmic-bright-purple text-white' : 'text-gray-300'}
           onClick={() => onChangeGender('male')}
         >
-          <Male className="mr-2 h-5 w-5" />
+          <UserRound className="mr-2 h-5 w-5" />
           Male
         </Button>
         <Button
@@ -35,7 +35,7 @@ const MoleBodyMap: React.FC<MoleBodyMapProps> = ({
           className={gender === 'female' ? 'bg-cosmic-bright-purple text-white' : 'text-gray-300'}
           onClick={() => onChangeGender('female')}
         >
-          <Female className="mr-2 h-5 w-5" />
+          <UserCircle className="mr-2 h-5 w-5" />
           Female
         </Button>
       </div>
