@@ -2,32 +2,19 @@
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
-import { Search, Send, Sparkles } from "lucide-react";
-
-type Message = {
-  id: string;
-  text: string;
-  isUser: boolean;
-  timestamp: Date;
-};
+import { useToast } from "@/hooks/use-toast";
+import { MessageCircle, Send } from "lucide-react";
+import { Message, INITIAL_MESSAGE, getAIResponse } from '@/utils/aiGuru';
 
 const AIChatBox = () => {
   const [input, setInput] = useState('');
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      text: 'Namaste! I am your AI Guru. How may I assist you on your spiritual journey today?',
-      isUser: false,
-      timestamp: new Date()
-    }
-  ]);
+  const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE]);
   const { toast } = useToast();
-  const [isTyping, setIsTyping] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() || isLoading) return;
 
     // Add user message
     const userMessage: Message = {
@@ -39,48 +26,42 @@ const AIChatBox = () => {
 
     setMessages(prev => [...prev, userMessage]);
     setInput('');
-    
-    // Simulate AI typing
-    setIsTyping(true);
-    
-    // Simulate AI response after a short delay
-    setTimeout(() => {
+    setIsLoading(true);
+
+    try {
+      const aiResponseText = await getAIResponse(input);
+      
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
-        text: generateAIResponse(input),
+        text: aiResponseText,
         isUser: false,
         timestamp: new Date()
       };
       
       setMessages(prev => [...prev, aiResponse]);
-      setIsTyping(false);
       
       toast({
         title: "New insight received",
         description: "The cosmic AI has shared wisdom with you.",
         duration: 3000,
       });
-    }, 1500);
-  };
-
-  const generateAIResponse = (userInput: string): string => {
-    const responses = [
-      "The ancient texts speak of finding balance in all aspects of life. This applies to your current situation as well.",
-      "According to Vedic wisdom, the path you seek is illuminated by self-reflection and mindful practice.",
-      "Your cosmic alignment suggests a period of transformation ahead. Embrace the change with an open heart.",
-      "The planetary positions indicate a favorable time for new beginnings. Trust in the universal flow.",
-      "Ancient Indian scriptures remind us that patience is a virtue that bears the sweetest fruits.",
-      "The stars reveal that your journey has purpose. Continue with faith and determination."
-    ];
-    
-    return responses[Math.floor(Math.random() * responses.length)];
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "The cosmic energies are disturbed. Please try again later.",
+        duration: 3000,
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="cosmic-card flex flex-col h-[500px] max-w-2xl mx-auto bg-cosmic-midnight/80">
       <div className="p-4 border-b border-border bg-gradient-to-r from-cosmic-deep-purple/20 to-cosmic-bright-purple/20">
         <div className="flex items-center">
-          <Sparkles className="text-cosmic-gold mr-2 h-5 w-5" />
+          <MessageCircle className="text-cosmic-gold mr-2 h-5 w-5" />
           <h3 className="text-lg font-medium">Cosmic Guru AI</h3>
         </div>
       </div>
@@ -98,7 +79,7 @@ const AIChatBox = () => {
                   : 'bg-cosmic-deep-purple/40 text-white rounded-tl-none'
               }`}
             >
-              <p>{message.text}</p>
+              <p className="whitespace-pre-wrap">{message.text}</p>
               <span className="text-xs opacity-70 mt-1 block">
                 {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </span>
@@ -106,7 +87,7 @@ const AIChatBox = () => {
           </div>
         ))}
         
-        {isTyping && (
+        {isLoading && (
           <div className="flex justify-start">
             <div className="bg-cosmic-deep-purple/40 text-white p-3 rounded-lg rounded-tl-none max-w-[80%]">
               <div className="flex space-x-1">
@@ -124,12 +105,13 @@ const AIChatBox = () => {
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask the cosmic wisdom..."
+            placeholder="Ask for cosmic wisdom..."
             className="cosmic-input flex-grow"
+            disabled={isLoading}
           />
           <Button 
             type="submit" 
-            disabled={isTyping}
+            disabled={isLoading}
             className="cosmic-button"
           >
             <Send className="h-4 w-4" />
