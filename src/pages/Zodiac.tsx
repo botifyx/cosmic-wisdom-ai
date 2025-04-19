@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/select';
 import ZodiacCompatibilityResult from '@/components/ZodiacCompatibilityResult';
 import { toast } from 'sonner';
-import { zodiacSigns } from '@/lib/zodiac-data';
+import { zodiacSigns, CompatibilityResult } from '@/lib/zodiac-data';
 
 type FormValues = {
   signA: string;

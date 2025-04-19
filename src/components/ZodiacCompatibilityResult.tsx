@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Progress } from '@/components/ui/progress';
+import { CompatibilityResult } from '@/lib/zodiac-data';
 
 interface ZodiacCompatibilityResultProps {
   result: CompatibilityResult;
