@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Astrology from "./pages/Astrology";
+import Palmistry from "./pages/Palmistry";
 
 // Create a client outside of the component
 const queryClient = new QueryClient();
@@ -23,8 +24,8 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/astrology" element={<Astrology />} />
+            <Route path="/palmistry" element={<Palmistry />} />
             {/* These routes will be implemented in the future */}
-            <Route path="/palmistry" element={<NotFound />} />
             <Route path="/moleology" element={<NotFound />} />
             <Route path="/zodiac" element={<NotFound />} />
             <Route path="/kamasutra" element={<NotFound />} />
