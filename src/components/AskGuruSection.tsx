@@ -1,7 +1,6 @@
-
 import React from 'react';
 import AIChatBox from './AIChatBox';
-import { Lotus } from 'lucide-react';
+import { Sun } from 'lucide-react';
 import { Card } from './ui/card';
 
 const AskGuruSection = () => {
@@ -10,7 +9,7 @@ const AskGuruSection = () => {
       <Card className="max-w-4xl mx-auto bg-cosmic-deep-purple/20 backdrop-blur-sm p-6 rounded-lg border-cosmic-gold/30">
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <Lotus className="h-12 w-12 text-cosmic-gold" />
+            <Sun className="h-12 w-12 text-cosmic-gold" />
           </div>
           <h2 className="text-2xl font-serif mb-3 text-cosmic-gold">Ask the Cosmic Guru</h2>
           <p className="text-gray-300 max-w-2xl mx-auto">
