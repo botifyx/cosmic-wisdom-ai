@@ -13,6 +13,7 @@ import Zodiac from "./pages/Zodiac";
 import Moleology from "./pages/Moleology";
 import Kamasutra from "./pages/Kamasutra";
 import Chat from "./pages/Chat";
+import AncientWisdom from "./pages/AncientWisdom";
 
 // Create a client outside of the component
 const queryClient = new QueryClient();
@@ -33,8 +34,7 @@ const App: React.FC = () => {
             <Route path="/moleology" element={<Moleology />} />
             <Route path="/kamasutra" element={<Kamasutra />} />
             <Route path="/chat" element={<Chat />} />
-            {/* These routes will be implemented in the future */}
-            <Route path="/ancient-wisdom" element={<NotFound />} />
+            <Route path="/ancient-wisdom" element={<AncientWisdom />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

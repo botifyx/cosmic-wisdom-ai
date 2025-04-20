@@ -37,8 +37,25 @@ export const INITIAL_MESSAGE: Message = {
   timestamp: new Date()
 };
 
+// Mock AI response function for development without API key
 export async function getAIResponse(message: string) {
   try {
+    // For development without an API key, return a mock response
+    const responses = [
+      "Namaste, seeker of harmony. The ancient wisdom of Kamasutra speaks of connection beyond the physical realm. Your question touches on the divine union of energies. May you find balance in your relationships.",
+      "Namaste, dear one. The sacred texts reveal that true intimacy comes from understanding your partner's spiritual nature. Consider the elemental balance between you as you navigate this journey together.",
+      "Namaste, gentle soul. The Kamasutra teaches us that compatibility flows from respecting each other's unique energies. Your zodiac pairing suggests potential for deep connection when approached with mindfulness.",
+      "Namaste, seeker of connection. The ancient wisdom suggests that communication is the bridge between two souls. Open your heart to truly hear your partner's needs, and sacred intimacy will naturally bloom."
+    ];
+    
+    // Simulate network delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Return a random response
+    return responses[Math.floor(Math.random() * responses.length)];
+    
+    /* 
+    // This is the actual implementation when an API key is available
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -68,6 +85,7 @@ export async function getAIResponse(message: string) {
 
     const data = await response.json();
     return data.choices[0].message.content;
+    */
   } catch (error) {
     console.error('Error getting AI response:', error);
     throw error;

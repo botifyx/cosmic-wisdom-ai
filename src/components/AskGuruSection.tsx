@@ -1,8 +1,10 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import AIChatBox from './AIChatBox';
-import { Sun } from 'lucide-react';
+import { Sun, BookOpen } from 'lucide-react';
 import { Card } from './ui/card';
+import { Button } from './ui/button';
 
 const AskGuruSection = () => {
   return (
@@ -15,7 +17,7 @@ const AskGuruSection = () => {
           <h2 className="text-2xl font-serif mb-3 text-cosmic-gold">Ask the Cosmic Guru</h2>
           <p className="text-gray-300 max-w-2xl mx-auto">
             Discover the secrets of cosmic knowledge through our AI-powered insights into astrology,
-            palmistry, and ancient Indian wisdom.
+            palmistry, kamasutra, and ancient Indian wisdom.
           </p>
         </div>
 
@@ -28,6 +30,7 @@ const AskGuruSection = () => {
               <li>🔮 "What's the meaning of a mole on my right shoulder?"</li>
               <li>🧘‍♀️ "How can I understand my karmic path?"</li>
               <li>❤️ "What does Kamasutra say about emotional bonding?"</li>
+              <li>📜 "What do the Vedas teach about meditation?"</li>
             </ul>
           </div>
           <div className="p-4 rounded-lg bg-cosmic-deep-purple/10 backdrop-blur-sm">
@@ -38,11 +41,21 @@ const AskGuruSection = () => {
               <li>⭐ Karmic & Spiritual Guidance</li>
               <li>🧘‍♀️ Holistic Life Wisdom</li>
               <li>💕 Kamasutra & Relationship Harmony</li>
+              <li>📚 Vedic Philosophy & Ancient Texts</li>
             </ul>
           </div>
         </div>
 
         <AIChatBox />
+
+        <div className="mt-6 text-center">
+          <Link to="/ancient-wisdom">
+            <Button variant="outline" className="mt-4 border-cosmic-gold/50 text-cosmic-gold hover:bg-cosmic-deep-purple/30">
+              <BookOpen className="mr-2 h-4 w-4" />
+              Explore Ancient Wisdom
+            </Button>
+          </Link>
+        </div>
       </Card>
     </section>
   );
