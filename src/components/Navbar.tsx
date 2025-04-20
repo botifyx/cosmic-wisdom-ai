@@ -37,7 +37,9 @@ const Navbar = () => {
               <NavLink to="/moleology" isActive={location.pathname === "/moleology"}>Moleology</NavLink>
               <NavLink to="/ancient-wisdom" isActive={location.pathname === "/ancient-wisdom"}>Ancient Wisdom</NavLink>
               <NavLink to="/chat" isActive={location.pathname === "/chat"}>Guru Chat</NavLink>
-              <Button className="cosmic-button ml-4">Sign In</Button>
+              <Link to="/signin">
+                <Button className="cosmic-button ml-4">Sign In</Button>
+              </Link>
             </div>
           </div>
           
@@ -69,7 +71,9 @@ const Navbar = () => {
             <MobileNavLink to="/ancient-wisdom" onClick={toggleMenu} isActive={location.pathname === "/ancient-wisdom"}>Ancient Wisdom</MobileNavLink>
             <MobileNavLink to="/chat" onClick={toggleMenu} isActive={location.pathname === "/chat"}>Guru Chat</MobileNavLink>
             <div className="pt-2">
-              <Button className="w-full cosmic-button">Sign In</Button>
+              <Link to="/signin" onClick={toggleMenu}>
+                <Button className="w-full cosmic-button">Sign In</Button>
+              </Link>
             </div>
           </div>
         </div>
