@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Download, Share2 } from 'lucide-react';
@@ -73,7 +72,7 @@ const checkDoshas = (birthDate: string, birthTime: string) => {
     { name: 'Mangal Dosha', present: (day % 4 === 0), description: 'Mars in certain houses causing potential challenges in marriage.', remedy: 'Recite Hanuman Chalisa and wear Red Coral after proper rituals.' },
     { name: 'Kaal Sarp Dosha', present: (hour % 5 === 0), description: 'All planets hemmed between Rahu and Ketu causing delays in life progress.', remedy: 'Perform Kaal Sarp Dosha Nivaran puja and recite Sri Rudram.' },
     { name: 'Pitra Dosha', present: (day % 7 === 0), description: 'Indicates ancestral displeasure affecting family harmony.', remedy: 'Perform Shradh ceremonies and Pitra Tarpan rituals.' },
-    { name: 'Shani Dosha', present: (day % 8 === 0), description: 'Saturn's negative influence causing delays and hardships.', remedy: 'Visit Shani temple on Saturdays and donate black sesame seeds.' },
+    { name: 'Shani Dosha', present: (day % 8 === 0), description: 'Saturn\'s negative influence causing delays and hardships.', remedy: 'Visit Shani temple on Saturdays and donate black sesame seeds.' },
   ];
   
   // Filter doshas that are present
