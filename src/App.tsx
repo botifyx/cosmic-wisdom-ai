@@ -16,6 +16,7 @@ import Chat from "./pages/Chat";
 import AncientWisdom from "./pages/AncientWisdom";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
+import JanamKundaliResult from "./pages/JanamKundaliResult";
 
 // Create a client outside of the component
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/astrology" element={<Astrology />} />
+            <Route path="/astrology/janam-kundali-result" element={<JanamKundaliResult />} />
             <Route path="/palmistry" element={<Palmistry />} />
             <Route path="/zodiac" element={<Zodiac />} />
             <Route path="/moleology" element={<Moleology />} />

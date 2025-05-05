@@ -1,11 +1,12 @@
-
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Calendar as CalendarIcon, MapPin, Clock, Download, Share2, Star } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
+import { JanamKundaliForm } from '@/components/JanamKundaliForm';
 
 const Astrology = () => {
   const [formData, setFormData] = useState({
@@ -17,6 +18,7 @@ const Astrology = () => {
   
   const [isLoading, setIsLoading] = useState(false);
   const [hasResults, setHasResults] = useState(false);
+  const [showJanamKundali, setShowJanamKundali] = useState(false);
   const { toast } = useToast();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -70,109 +72,138 @@ const Astrology = () => {
             <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-8">
               Discover your cosmic blueprint with our advanced AI astrology system. Combining ancient Vedic wisdom with modern technology.
             </p>
-          </div>
-        </section>
-        
-        {/* Input Form Section */}
-        <section className="py-12 bg-cosmic-deep-purple/30">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="cosmic-card p-8">
-              <h2 className="text-2xl font-bold mb-6 text-center">Generate Your Astrology Chart</h2>
-              
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium mb-2">
-                    Full Name
-                  </label>
-                  <Input
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    placeholder="Enter your full name"
-                    className="cosmic-input w-full"
-                  />
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label htmlFor="birthDate" className="block text-sm font-medium mb-2">
-                      Birth Date
-                    </label>
-                    <div className="relative">
-                      <Input
-                        id="birthDate"
-                        name="birthDate"
-                        type="date"
-                        value={formData.birthDate}
-                        onChange={handleInputChange}
-                        className="cosmic-input w-full"
-                      />
-                      <CalendarIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="birthTime" className="block text-sm font-medium mb-2">
-                      Birth Time
-                    </label>
-                    <div className="relative">
-                      <Input
-                        id="birthTime"
-                        name="birthTime"
-                        type="time"
-                        value={formData.birthTime}
-                        onChange={handleInputChange}
-                        className="cosmic-input w-full"
-                      />
-                      <Clock className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                    </div>
-                  </div>
-                </div>
-                
-                <div>
-                  <label htmlFor="birthPlace" className="block text-sm font-medium mb-2">
-                    Birth Place
-                  </label>
-                  <div className="relative">
-                    <Input
-                      id="birthPlace"
-                      name="birthPlace"
-                      value={formData.birthPlace}
-                      onChange={handleInputChange}
-                      placeholder="City, Country"
-                      className="cosmic-input w-full"
-                    />
-                    <MapPin className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                  </div>
-                </div>
-                
-                <div className="pt-4">
-                  <Button 
-                    type="submit" 
-                    className="cosmic-button w-full h-12"
-                    disabled={isLoading}
-                  >
-                    {isLoading ? (
-                      <>
-                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        Consulting the Stars...
-                      </>
-                    ) : (
-                      "Generate Astrology Chart"
-                    )}
-                  </Button>
-                </div>
-              </form>
+            
+            <div className="flex flex-wrap justify-center gap-4 mt-8">
+              <Button 
+                onClick={() => {
+                  setShowJanamKundali(false);
+                  setHasResults(false);
+                }} 
+                className={`cosmic-button ${!showJanamKundali && !hasResults ? 'bg-cosmic-gold text-cosmic-midnight' : ''}`}
+              >
+                Birth Chart Generator
+              </Button>
+              <Button 
+                onClick={() => {
+                  setShowJanamKundali(true);
+                  setHasResults(false);
+                }} 
+                className={`cosmic-button ${showJanamKundali ? 'bg-cosmic-gold text-cosmic-midnight' : ''}`}
+              >
+                Janam Kundali Analysis
+              </Button>
             </div>
           </div>
         </section>
         
+        {/* Input Form Section - Show either Birth Chart Generator or Janam Kundali form */}
+        {showJanamKundali ? (
+          <section className="py-12 bg-cosmic-deep-purple/30">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+              <JanamKundaliForm />
+            </div>
+          </section>
+        ) : (
+          <section className="py-12 bg-cosmic-deep-purple/30">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="cosmic-card p-8">
+                <h2 className="text-2xl font-bold mb-6 text-center">Generate Your Astrology Chart</h2>
+                
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div>
+                    <label htmlFor="name" className="block text-sm font-medium mb-2">
+                      Full Name
+                    </label>
+                    <Input
+                      id="name"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      placeholder="Enter your full name"
+                      className="cosmic-input w-full"
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label htmlFor="birthDate" className="block text-sm font-medium mb-2">
+                        Birth Date
+                      </label>
+                      <div className="relative">
+                        <Input
+                          id="birthDate"
+                          name="birthDate"
+                          type="date"
+                          value={formData.birthDate}
+                          onChange={handleInputChange}
+                          className="cosmic-input w-full"
+                        />
+                        <CalendarIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <label htmlFor="birthTime" className="block text-sm font-medium mb-2">
+                        Birth Time
+                      </label>
+                      <div className="relative">
+                        <Input
+                          id="birthTime"
+                          name="birthTime"
+                          type="time"
+                          value={formData.birthTime}
+                          onChange={handleInputChange}
+                          className="cosmic-input w-full"
+                        />
+                        <Clock className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="birthPlace" className="block text-sm font-medium mb-2">
+                      Birth Place
+                    </label>
+                    <div className="relative">
+                      <Input
+                        id="birthPlace"
+                        name="birthPlace"
+                        value={formData.birthPlace}
+                        onChange={handleInputChange}
+                        placeholder="City, Country"
+                        className="cosmic-input w-full"
+                      />
+                      <MapPin className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                    </div>
+                  </div>
+                  
+                  <div className="pt-4">
+                    <Button 
+                      type="submit" 
+                      className="cosmic-button w-full h-12"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? (
+                        <>
+                          <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          Consulting the Stars...
+                        </>
+                      ) : (
+                        "Generate Astrology Chart"
+                      )}
+                    </Button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </section>
+        )}
+        
         {/* Results Section - Conditionally rendered */}
-        {hasResults && (
+        {hasResults && !showJanamKundali && (
           <section className="py-16 bg-cosmic-midnight">
             <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
               <h2 className="text-3xl font-bold mb-12 text-center text-glow">
@@ -290,6 +321,8 @@ const Astrology = () => {
                 title="Janam Kundali Analysis"
                 description="Comprehensive birth chart analysis using traditional Vedic methodologies enhanced by AI precision."
                 icon="🌟"
+                link="/astrology"
+                onClick={() => setShowJanamKundali(true)}
               />
               <FeatureCard
                 title="Career & Finance Predictions"
@@ -353,14 +386,34 @@ const HouseItem = ({ house, planets, influence }: { house: string; planets: stri
   </li>
 );
 
-const FeatureCard = ({ title, description, icon }: { title: string; description: string; icon: string }) => (
+const FeatureCard = ({ 
+  title, 
+  description, 
+  icon, 
+  link,
+  onClick
+}: { 
+  title: string; 
+  description: string; 
+  icon: string; 
+  link?: string;
+  onClick?: () => void;
+}) => (
   <div className="cosmic-card p-6 flex flex-col h-full">
     <div className="text-4xl mb-4 text-cosmic-gold">{icon}</div>
     <h3 className="text-lg font-semibold mb-3">{title}</h3>
     <p className="text-gray-400 flex-grow">{description}</p>
-    <Button variant="link" className="text-cosmic-gold p-0 mt-4 self-start">
-      Learn more
-    </Button>
+    {link ? (
+      <Link to={link} onClick={onClick}>
+        <Button variant="link" className="text-cosmic-gold p-0 mt-4 self-start">
+          Learn more
+        </Button>
+      </Link>
+    ) : (
+      <Button variant="link" className="text-cosmic-gold p-0 mt-4 self-start">
+        Learn more
+      </Button>
+    )}
   </div>
 );
 
