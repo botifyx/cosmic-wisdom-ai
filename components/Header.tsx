@@ -34,7 +34,12 @@ const Header: React.FC<HeaderProps> = ({ onNavClick }) => {
           <a onClick={() => onNavClick(FeatureId.ASTROLOGY)} className="nav-link-hover-glow cursor-pointer">Astrology</a>
           <a onClick={() => onNavClick(FeatureId.PALMISTRY)} className="nav-link-hover-glow cursor-pointer">Palmistry</a>
           <a onClick={() => onNavClick(FeatureId.DATING)} className="nav-link-hover-glow cursor-pointer">Matchmaking</a>
-           <a onClick={() => onNavClick(FeatureId.IMAGE_GENERATOR)} className="bg-yellow-500 text-gray-900 px-4 py-2 rounded-full hover:bg-yellow-400 transition-colors font-semibold cursor-pointer nav-link-hover-glow">Cosmic Art</a>
+          <a
+            onClick={() => onNavClick(FeatureId.IMAGE_GENERATOR)}
+            className="bg-yellow-500 text-gray-900 px-4 py-2 rounded-full hover:bg-yellow-400 hover:text-black transition-colors font-semibold cursor-pointer nav-link-hover-glow"
+          >
+            Cosmic Art
+          </a>
         </div>
       </nav>
     </header>
