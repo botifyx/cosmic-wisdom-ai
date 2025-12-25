@@ -21,7 +21,9 @@ export const initializeRazorpay = (): Promise<boolean> => {
 
 export const createSubscription = async (
   planId: string, 
-  userEmail: string, 
+  userEmail: string,
+  amount: number,
+  currency: string,
   onSuccess: (response: any) => void, 
   onFailure: (error: any) => void
 ) => {
@@ -40,11 +42,17 @@ export const createSubscription = async (
   // Ideally: const subId = await api.createSubscription({ planId });
 
   // Mocking a subscription ID for demo purposes if backend isn't set up to generate it.
-  const options = {
+  // Mocking: We cannot create a valid subscription_id client-side without the Secret Key.
+  // Using a random string ("sub_...") causes a 400 Bad Request from Razorpay Standard Checkout.
+  // FIX: For client-side simulation, we will use "One-Time Payment" mode which works with just Key ID.
+  
+  const options: any = {
     key: RAZORPAY_KEY_ID,
-    subscription_id: "sub_" + Math.random().toString(36).substring(7), // This normally comes from backend
+    // subscription_id: "sub_" + Math.random().toString(36).substring(7), // REMOVED: Causes 400 error
+    amount: amount * 100, // Amount in lowest denomination (e.g., paise, cents)
+    currency: currency,
     name: "Taintra Cosmic Wisdom",
-    description: "Premium Subscription",
+    description: "Premium Subscription (Simulated)",
     handler: function (response: any) {
       onSuccess(response);
     },
@@ -52,7 +60,7 @@ export const createSubscription = async (
       email: userEmail,
     },
     theme: {
-      color: "#F37254",
+        color: "#F37254",
     },
     modal: {
         ondismiss: function() {

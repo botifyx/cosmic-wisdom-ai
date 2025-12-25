@@ -72,6 +72,8 @@ const Packages: React.FC<PackagesProps> = ({ onSelectPackage, userState, userCou
         await createSubscription(
             plan.id,
             user.email,
+            price,
+            currencyCode,
             async (response) => {
                 console.log("Payment Success", response);
                 await processPaymentSuccess(user.uid, response, { ...plan, price, currency: currencyCode });
