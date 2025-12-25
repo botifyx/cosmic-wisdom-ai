@@ -1,10 +1,11 @@
+
 import React from 'react';
 import { PlanetaryPositions, PlanetInfo } from '../types';
 
-const PLANET_SHORT_NAMES: { [key: string]: string } = {
-  Sun: 'Su', Moon: 'Mo', Mars: 'Ma', Mercury: 'Me',
-  Jupiter: 'Ju', Venus: 'Ve', Saturn: 'Sa', Rahu: 'Ra',
-  Ketu: 'Ke', Ascendant: 'As'
+const PLANET_SYMBOLS: { [key: string]: string } = {
+  Sun: '☉', Moon: '☽', Mars: '♂', Mercury: '☿',
+  Jupiter: '♃', Venus: '♀', Saturn: '♄', Rahu: '☊',
+  Ketu: '☋', Ascendant: 'As'
 };
 
 const PLANET_COLORS: { [key: string]: string } = {
@@ -68,36 +69,12 @@ const StarChart: React.FC<StarChartProps> = ({ positions }) => {
                   const planetInfo = positions[planet];
                   const title = `${planet}${planetInfo.isRetrograde ? ' (Retrograde)' : ''}`;
 
-                  if (planet === 'Rahu') {
-                    return (
-                      <div key={planet} className="flex items-center gap-1" title={title}>
-                          <div className={`w-4 h-4 ${PLANET_COLORS.Rahu}`}>
-                              <svg viewBox="0 0 100 100" className="w-full h-full" fill="none" stroke="currentColor" strokeWidth="15" strokeLinecap="round">
-                                  <path d="M 80 80 C 80 35, 20 35, 20 80" />
-                              </svg>
-                          </div>
-                          {planetInfo.isRetrograde && <span className="text-red-400 text-xs font-mono">R</span>}
-                      </div>
-                    );
-                  }
-                  if (planet === 'Ketu') {
-                     return (
-                      <div key={planet} className="flex items-center gap-1" title={title}>
-                          <div className={`w-4 h-4 ${PLANET_COLORS.Ketu}`}>
-                              <svg viewBox="0 0 100 100" className="w-full h-full" fill="none" stroke="currentColor" strokeWidth="15" strokeLinecap="round">
-                                  <path d="M 80 20 C 80 65, 20 65, 20 20" />
-                              </svg>
-                          </div>
-                          {planetInfo.isRetrograde && <span className="text-red-400 text-xs font-mono">R</span>}
-                      </div>
-                    );
-                  }
                   return (
-                    <div key={planet} className="flex items-baseline justify-center" title={title}>
-                      <span className={`text-sm font-semibold ${PLANET_COLORS[planet] || 'text-white'}`}>
-                        {PLANET_SHORT_NAMES[planet]}
+                    <div key={planet} className="flex items-center justify-center" title={title}>
+                      <span className={`text-xl font-semibold ${PLANET_COLORS[planet] || 'text-white'}`}>
+                        {PLANET_SYMBOLS[planet]}
                       </span>
-                      {planetInfo.isRetrograde && <span className="text-red-400 text-xs font-mono ml-px">R</span>}
+                      {planetInfo.isRetrograde && <span className="text-red-400 text-xs font-mono -ml-1">R</span>}
                     </div>
                   );
                 })}

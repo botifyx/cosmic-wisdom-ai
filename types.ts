@@ -1,3 +1,4 @@
+
 // Fix: Import React to resolve React-related type errors.
 import React from 'react';
 
@@ -7,7 +8,8 @@ export enum FeatureId {
   PALMISTRY = 'palmistry',
   COMPATIBILITY = 'compatibility',
   MOLEOLOGY = 'moleology',
-  IMAGE_GENERATOR = 'image_generator',
+  TATTOO_MAKER = 'tattoo_maker',
+  COSMIC_ART_GENERATOR = 'cosmic_art_generator',
   DATING = 'dating',
   MANTRA_GENERATOR = 'mantra_generator',
   SACRED_UNION = 'sacred_union',
@@ -15,6 +17,7 @@ export enum FeatureId {
   FACE_READING = 'face_reading',
   HANDWRITING_ANALYSIS = 'handwriting_analysis',
   TOUR = 'tour',
+  PACKAGES = 'packages',
 }
 
 export interface Feature {
@@ -22,6 +25,7 @@ export interface Feature {
   title: string;
   description: string;
   Icon: React.FC<React.SVGProps<SVGSVGElement>>;
+  imageUrl: string;
 }
 
 export interface ChatMessage {
@@ -96,6 +100,28 @@ export interface AstrologyAnalysis {
     analysis: AstrologyAnalysisSection[];
 }
 
+export interface TrialAstrologyAnalysis {
+    greeting: string;
+    summary: string;
+}
+
+
+export interface HoroscopeSection {
+    title: string;
+    outlook: string;
+}
+
+export interface DailyHoroscopeAnalysis {
+    greeting: string;
+    introduction: string;
+    sections: HoroscopeSection[];
+    conclusion: string;
+    luckyColor: string;
+    luckyNumbers: number[];
+    // Fix: Added sources to comply with coding guidelines for search-based insights.
+    sources?: { title: string; uri: string }[];
+}
+
 export interface ZodiacSignInfo {
   name: string;
   element: string;
@@ -158,7 +184,7 @@ export interface HandwritingAnalysisSection {
   category: 'overall_impression' | 'pressure' | 'slant' | 'size' | 'spacing' | 'signature' | 'summary';
 }
 
-export interface HandwritingAnalysisResult {
+export interface HandwritingAnalysis {
   sections: HandwritingAnalysisSection[];
 }
 
@@ -199,4 +225,86 @@ export interface ZodiacCompatibilitySection {
 
 export interface ZodiacCompatibilityAnalysis {
   sections: ZodiacCompatibilitySection[];
+}
+
+// New types for AI Hand Mudra analysis
+export interface HandMudraAnalysis {
+  mudraName: string;
+  sanskritName: string;
+  description: string;
+  instructions: string[];
+  personalizedGuidance: string;
+  practice: string;
+  imagePrompt: string;
+}
+
+// Input data collected from the Package Wizard
+export interface PackageInputs {
+    // Core
+    name: string;
+    gender: Gender;
+    // Astrology & Compatibility
+    birthDate?: string;
+    birthTime?: string;
+    birthPlace?: string;
+    isBirthTimeUnknown?: boolean;
+    partnerSign?: string; // For Compatibility/Sacred Union
+    // Images
+    palmImage?: string; // Base64
+    faceImage?: string; // Base64
+    handwritingImage?: string; // Base64
+    // Specifics
+    mantraGoal?: string;
+    tarotSpread?: string; // e.g., 'threeCard'
+    moleLocations?: string[];
+}
+
+// Final Combined Analysis Report
+export interface CombinedAnalysisReport {
+    introduction: string;
+    
+    // Individual Analyses (Optional depending on package)
+    astrology?: AstrologyAnalysis;
+    palmistry?: PalmReadingAnalysis;
+    faceReading?: FaceReadingAnalysis;
+    handwriting?: HandwritingAnalysis;
+    tarot?: TarotAnalysis;
+    sacredUnion?: SacredUnionAnalysis;
+    mantra?: MantraAnalysis;
+    zodiacCompatibility?: ZodiacCompatibilityAnalysis;
+    moleology?: MoleologyAnalysis;
+    
+    // Synthesized Section
+    holisticGuidance: string;
+    
+    // Creative Suggestions (Generated based on holistic guidance)
+    tattooSuggestion?: { prompt: string, placement: string };
+    artSuggestion?: { prompt: string };
+}
+
+export interface UserContext {
+  geolocation: {
+    city: string;
+    region: string;
+    country: string;
+    latitude: number;
+    longitude: number;
+    ip: string;
+  } | null;
+  userAgent: {
+    browser: string;
+    os: string;
+    device: string;
+  };
+}
+
+// User Authentication Types
+export type UserState = 'guest' | 'trial' | 'full_access';
+export type AuthView = 'login' | 'register';
+export type Gender = 'Male' | 'Female' | 'Unisex';
+export interface LoggedInUser { 
+  name: string; 
+  email: string; 
+  state: UserState; 
+  gender: Gender; 
 }

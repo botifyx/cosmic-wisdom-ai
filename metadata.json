@@ -2,6 +2,7 @@
   "name": "Taintra - The Future of Ancient Wisdom",
   "description": "Discover the secrets of cosmic knowledge through our AI-powered insights into astrology, palmistry, and ancient Indian wisdom. Featuring an AI guru, Vedic astrology, palm reading, and an image generator.",
   "requestFramePermissions": [
-    "camera"
+    "camera",
+    "geolocation"
   ]
 }

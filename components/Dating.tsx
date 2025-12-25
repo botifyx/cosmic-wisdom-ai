@@ -1,10 +1,18 @@
+
 import React, { useState, useCallback, useRef } from 'react';
-import { PersonDetails, CosmicMatchAnalysis, AnalysisSection, SynastryAspect } from '../types';
+import { PersonDetails, CosmicMatchAnalysis, AnalysisSection, SynastryAspect, UserContext } from '../types';
 import { getCosmicMatchAnalysis } from '../services/geminiService';
+import TattooSuggestion from './TattooSuggestion';
 import ArtSuggestion from './ArtSuggestion';
+import MudraSuggestion from './MudraSuggestion';
+
+type Gender = 'Male' | 'Female' | 'Unisex';
 
 interface DatingProps {
-  onSuggestArt: (prompt: string, aspectRatio: string) => void;
+  onSuggestTattoo: (details: { prompt: string; placement: string; aspectRatio: string; }) => void;
+  onSuggestArt: (details: { prompt: string; aspectRatio: string; }) => void;
+  userGender: Gender | null;
+  userContext: UserContext | null;
 }
 
 // A reusable form component for person details
@@ -51,7 +59,7 @@ const PersonForm: React.FC<{
 };
 
 // Main Dating component
-const Dating: React.FC<DatingProps> = ({ onSuggestArt }) => {
+const Dating: React.FC<DatingProps> = ({ onSuggestTattoo, onSuggestArt, userGender, userContext }) => {
   const [person1, setPerson1] = useState<PersonDetails>({ name: '', birthDate: '', birthTime: '', birthPlace: '', bio: '' });
   const [person2, setPerson2] = useState<PersonDetails>({ name: '', birthDate: '', birthTime: '', birthPlace: '', bio: '' });
   const [analysis, setAnalysis] = useState<CosmicMatchAnalysis | null>(null);
@@ -63,7 +71,7 @@ const Dating: React.FC<DatingProps> = ({ onSuggestArt }) => {
     setIsLoading(true);
     setAnalysis(null);
 
-    const result = await getCosmicMatchAnalysis(person1, person2);
+    const result = await getCosmicMatchAnalysis(person1, person2, userContext);
     if (result) {
       setAnalysis(result);
     } else {
@@ -71,7 +79,7 @@ const Dating: React.FC<DatingProps> = ({ onSuggestArt }) => {
     }
 
     setIsLoading(false);
-  }, [person1, person2]);
+  }, [person1, person2, userContext]);
   
   const handleAnalyzeClick = () => {
     for (const key in person1) {
@@ -195,8 +203,8 @@ const Dating: React.FC<DatingProps> = ({ onSuggestArt }) => {
   };
 
 
-  const ResultDisplay: React.FC<{ analysis: CosmicMatchAnalysis; onSuggestArt: Function }> = ({ analysis, onSuggestArt }) => {
-    const getAnalysisTextForArt = () => {
+  const ResultDisplay: React.FC<{ analysis: CosmicMatchAnalysis; onSuggestTattoo: Function; onSuggestArt: Function; userGender: Gender | null; userContext: UserContext | null; }> = ({ analysis, onSuggestTattoo, onSuggestArt, userGender, userContext }) => {
+    const getAnalysisTextForSuggestion = () => {
         if (!analysis) return "";
         return `Compatibility Summary: ${analysis.overallCompatibility.summary}\nSpiritual Guidance: ${analysis.spiritualGuidance}`;
     };
@@ -245,29 +253,43 @@ const Dating: React.FC<DatingProps> = ({ onSuggestArt }) => {
                 <p className="text-gray-300">{analysis.spiritualGuidance}</p>
             </div>
             
-            {analysis && (
-              <>
-                <ArtSuggestion 
-                    analysisText={getAnalysisTextForArt()}
-                    onGeneratePrompt={onSuggestArt as any}
-                    featureName="Matchmaking"
-                />
-                <div className="text-center mt-8 space-y-4 md:space-y-0 md:space-x-4 print-hidden">
-                    <button onClick={handlePrint} className="bg-transparent border border-yellow-400 text-yellow-400 font-bold py-2 px-6 rounded-lg hover:bg-yellow-400/10 transition-colors">
-                        Print Report
-                    </button>
-                    <button onClick={handleShare} className="bg-transparent border border-yellow-400 text-yellow-400 font-bold py-2 px-6 rounded-lg hover:bg-yellow-400/10 transition-colors">
-                        Share Summary
-                    </button>
-                    <button
-                        onClick={() => { setAnalysis(null); }}
-                        className="bg-gray-700 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-600 transition-colors"
-                    >
-                        Start a New Analysis
-                    </button>
+            <div className="mt-8 animate-[fadeIn_1s_ease-in-out] print-hidden">
+                <div className="grid md:grid-cols-3 gap-4">
+                    <TattooSuggestion 
+                        analysisText={getAnalysisTextForSuggestion()}
+                        onGenerateTattoo={onSuggestTattoo as any}
+                        featureName="Matchmaking"
+                        userContext={userContext}
+                    />
+                    <ArtSuggestion
+                        analysisText={getAnalysisTextForSuggestion()}
+                        onGenerateArt={onSuggestArt as any}
+                        featureName="Matchmaking"
+                        userContext={userContext}
+                    />
+                    <MudraSuggestion
+                        analysisText={getAnalysisTextForSuggestion()}
+                        featureName="Matchmaking"
+                        userGender={userGender}
+                        userContext={userContext}
+                    />
                 </div>
-              </>
-            )}
+            </div>
+            
+            <div className="text-center mt-8 space-y-4 md:space-y-0 md:space-x-4 print-hidden">
+                <button onClick={handlePrint} className="bg-transparent border border-yellow-400 text-yellow-400 font-bold py-2 px-6 rounded-lg hover:bg-yellow-400/10 transition-colors">
+                    Print Report
+                </button>
+                <button onClick={handleShare} className="bg-transparent border border-yellow-400 text-yellow-400 font-bold py-2 px-6 rounded-lg hover:bg-yellow-400/10 transition-colors">
+                    Share Summary
+                </button>
+                <button
+                    onClick={() => { setAnalysis(null); }}
+                    className="bg-gray-700 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-600 transition-colors"
+                >
+                    Start a New Analysis
+                </button>
+            </div>
             </div>
         </div>
     );
@@ -310,7 +332,7 @@ const Dating: React.FC<DatingProps> = ({ onSuggestArt }) => {
         </div>
       )}
 
-      {analysis && <ResultDisplay analysis={analysis} onSuggestArt={onSuggestArt} />}
+      {analysis && <ResultDisplay analysis={analysis} onSuggestTattoo={onSuggestTattoo} onSuggestArt={onSuggestArt} userGender={userGender} userContext={userContext} />}
 
     </div>
   );

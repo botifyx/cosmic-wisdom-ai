@@ -1,4 +1,7 @@
 
+
+
+
 import React from 'react';
 import { FeatureId } from '../types';
 
@@ -8,11 +11,13 @@ interface FooterProps {
 
 const Footer: React.FC<FooterProps> = ({ onNavClick }) => {
   const quickLinks = [
+    { label: 'Cosmic Readings', id: FeatureId.PACKAGES },
     { label: 'Vedic Astrology', id: FeatureId.ASTROLOGY },
     { label: 'Palm Reading', id: FeatureId.PALMISTRY },
     { label: 'Tarot Reading', id: FeatureId.TAROT },
-    { label: 'Matchmaking', id: FeatureId.DATING },
-    { label: 'Cosmic Art', id: FeatureId.IMAGE_GENERATOR }
+    { label: 'Mantra Generator', id: FeatureId.MANTRA_GENERATOR },
+    { label: 'Cosmic Art', id: FeatureId.COSMIC_ART_GENERATOR },
+    { label: 'Cosmic Tattoo', id: FeatureId.TATTOO_MAKER }
   ];
 
   return (

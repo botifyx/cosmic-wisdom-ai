@@ -1,15 +1,25 @@
+
 import React, { useState, useCallback } from 'react';
 import { getSacredUnionAnalysis } from '../services/geminiService';
-import { SacredUnionAnalysis, ZodiacSignInfo } from '../types';
+import { SacredUnionAnalysis, ZodiacSignInfo, UserContext } from '../types';
+// Fix: Corrected import to ArtSuggestion and added TattooSuggestion
 import ArtSuggestion from './ArtSuggestion';
+import TattooSuggestion from './TattooSuggestion';
+import MudraSuggestion from './MudraSuggestion';
 
 const ZODIAC_SIGNS = [
   "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
   "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"
 ];
 
+type Gender = 'Male' | 'Female' | 'Unisex';
+
 interface SacredUnionProps {
-  onSuggestArt: (prompt: string, aspectRatio: string) => void;
+  onSuggestTattoo: (details: { prompt: string; placement: string; aspectRatio: string; }) => void;
+  // Fix: Added onSuggestArt to props to match what's passed from App.tsx
+  onSuggestArt: (details: { prompt: string; aspectRatio: string; }) => void;
+  userGender: Gender | null;
+  userContext: UserContext | null;
 }
 
 const ZodiacIcon: React.FC<{ sign: string, className?: string }> = ({ sign, className = "w-10 h-10" }) => {
@@ -20,7 +30,7 @@ const ZodiacIcon: React.FC<{ sign: string, className?: string }> = ({ sign, clas
     return <span className={`text-4xl ${className}`} style={{ filter: 'drop-shadow(0 0 5px currentColor)'}}>{icons[sign] || '?'}</span>;
 };
 
-const SacredUnion: React.FC<SacredUnionProps> = ({ onSuggestArt }) => {
+const SacredUnion: React.FC<SacredUnionProps> = ({ onSuggestTattoo, onSuggestArt, userGender, userContext }) => {
     const [sign1, setSign1] = useState<string>('Gemini');
     const [sign2, setSign2] = useState<string>('Leo');
     const [analysis, setAnalysis] = useState<SacredUnionAnalysis | null>(null);
@@ -32,7 +42,7 @@ const SacredUnion: React.FC<SacredUnionProps> = ({ onSuggestArt }) => {
         setError('');
         setAnalysis(null);
 
-        const result = await getSacredUnionAnalysis(sign1, sign2);
+        const result = await getSacredUnionAnalysis(sign1, sign2, userContext);
 
         if (result) {
             setAnalysis(result);
@@ -40,7 +50,7 @@ const SacredUnion: React.FC<SacredUnionProps> = ({ onSuggestArt }) => {
             setError('Could not retrieve the sacred analysis. The stars may be clouded, please try again.');
         }
         setIsLoading(false);
-    }, [sign1, sign2]);
+    }, [sign1, sign2, userContext]);
 
     const handlePrint = () => { window.print(); };
 
@@ -53,7 +63,7 @@ const SacredUnion: React.FC<SacredUnionProps> = ({ onSuggestArt }) => {
         }
     };
     
-    const getAnalysisTextForArt = () => {
+    const getAnalysisTextForTattoo = () => {
         if (!analysis) return "";
         return `Sacred Connection Summary: ${analysis.sacredConnection}\nRecommendation: ${analysis.sacredRecommendation}`;
     };
@@ -184,11 +194,26 @@ const SacredUnion: React.FC<SacredUnionProps> = ({ onSuggestArt }) => {
 
                         {analysis && (
                             <>
-                                <ArtSuggestion 
-                                    analysisText={getAnalysisTextForArt()}
-                                    onGeneratePrompt={onSuggestArt}
-                                    featureName="Sacred Union"
-                                />
+                                <div className="grid md:grid-cols-3 gap-4">
+                                    <TattooSuggestion 
+                                        analysisText={getAnalysisTextForTattoo()}
+                                        onGenerateTattoo={onSuggestTattoo}
+                                        featureName="Sacred Union"
+                                        userContext={userContext}
+                                    />
+                                    <ArtSuggestion 
+                                        analysisText={getAnalysisTextForTattoo()}
+                                        onGenerateArt={onSuggestArt}
+                                        featureName="Sacred Union"
+                                        userContext={userContext}
+                                    />
+                                    <MudraSuggestion
+                                        analysisText={getAnalysisTextForTattoo()}
+                                        featureName="Sacred Union"
+                                        userGender={userGender}
+                                        userContext={userContext}
+                                    />
+                                </div>
                                  <div className="text-center mt-8 space-y-4 md:space-y-0 md:space-x-4 print-hidden">
                                     <button onClick={handlePrint} className="bg-transparent border border-yellow-400 text-yellow-400 font-bold py-2 px-6 rounded-lg hover:bg-yellow-400/10 transition-colors">
                                         Print Report

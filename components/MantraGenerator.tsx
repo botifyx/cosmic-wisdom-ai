@@ -1,7 +1,13 @@
+
 import React, { useState, useCallback, useRef } from 'react';
 import { getMantraAnalysis, generateMantraAudio } from '../services/geminiService';
-import { MantraAnalysis } from '../types';
+import { MantraAnalysis, UserContext } from '../types';
+// Fix: Corrected import to ArtSuggestion and added TattooSuggestion
 import ArtSuggestion from './ArtSuggestion';
+import TattooSuggestion from './TattooSuggestion';
+import MudraSuggestion from './MudraSuggestion';
+
+type Gender = 'Male' | 'Female' | 'Unisex';
 
 const MantraIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24" strokeWidth={1.5} stroke="currentColor" {...props}>
@@ -10,7 +16,10 @@ const MantraIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 interface MantraGeneratorProps {
-  onSuggestArt: (prompt: string, aspectRatio: string) => void;
+  onSuggestTattoo: (details: { prompt: string; placement: string; aspectRatio: string; }) => void;
+  onSuggestArt: (details: { prompt: string; aspectRatio: string; }) => void;
+  userGender: Gender | null;
+  userContext: UserContext | null;
 }
 
 // Audio helper functions from guidelines
@@ -44,7 +53,7 @@ async function decodeAudioData(
 }
 
 
-const MantraGenerator: React.FC<MantraGeneratorProps> = ({ onSuggestArt }) => {
+const MantraGenerator: React.FC<MantraGeneratorProps> = ({ onSuggestTattoo, onSuggestArt, userGender, userContext }) => {
     const [goal, setGoal] = useState('');
     const [analysis, setAnalysis] = useState<MantraAnalysis | null>(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -63,14 +72,14 @@ const MantraGenerator: React.FC<MantraGeneratorProps> = ({ onSuggestArt }) => {
         setAnalysis(null);
         setAudioBuffer(null); // Reset audio on new generation
 
-        const result = await getMantraAnalysis(goal);
+        const result = await getMantraAnalysis(goal, userGender || 'Unisex', userContext);
         if (result) {
             setAnalysis(result);
         } else {
             setError('Could not generate a mantra at this time. Please try refining your intention.');
         }
         setIsLoading(false);
-    }, [goal]);
+    }, [goal, userGender, userContext]);
     
     const handlePlayMantra = useCallback(async () => {
         if (!analysis) return;
@@ -124,7 +133,7 @@ const MantraGenerator: React.FC<MantraGeneratorProps> = ({ onSuggestArt }) => {
         }
     };
 
-    const getAnalysisTextForArt = () => {
+    const getAnalysisTextForTattoo = () => {
         if (!analysis) return "";
         return `My personal mantra is "${analysis.transliteration}". Its meaning is: "${analysis.overallMeaning}". I want to create a visual representation of this.`;
     };
@@ -242,11 +251,26 @@ const MantraGenerator: React.FC<MantraGeneratorProps> = ({ onSuggestArt }) => {
                         </div>
                         {analysis && (
                             <>
-                                <ArtSuggestion 
-                                    analysisText={getAnalysisTextForArt()}
-                                    onGeneratePrompt={onSuggestArt}
-                                    featureName="MantraGenerator"
-                                />
+                                <div className="grid md:grid-cols-3 gap-4 mt-8 print-hidden">
+                                    <TattooSuggestion 
+                                        analysisText={getAnalysisTextForTattoo()}
+                                        onGenerateTattoo={onSuggestTattoo}
+                                        featureName="MantraGenerator"
+                                        userContext={userContext}
+                                    />
+                                    <ArtSuggestion 
+                                        analysisText={getAnalysisTextForTattoo()}
+                                        onGenerateArt={onSuggestArt}
+                                        featureName="MantraGenerator"
+                                        userContext={userContext}
+                                    />
+                                    <MudraSuggestion
+                                        analysisText={getAnalysisTextForTattoo()}
+                                        featureName="MantraGenerator"
+                                        userGender={userGender}
+                                        userContext={userContext}
+                                    />
+                                </div>
                                 <div className="text-center mt-8 space-y-4 md:space-y-0 md:space-x-4 print-hidden">
                                     <button onClick={handlePrint} className="bg-transparent border border-yellow-400 text-yellow-400 font-bold py-2 px-6 rounded-lg hover:bg-yellow-400/10 transition-colors">
                                         Print Analysis

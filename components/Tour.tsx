@@ -1,26 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FeatureId } from '../types';
+import { features } from '../features';
 
 interface TourProps {
   onFeatureSelect: (feature: FeatureId) => void;
 }
 
-const tools = [
-  { id: FeatureId.ASTROLOGY, title: 'AI Vedic Astrology', description: 'Enter your birth date, time, and place. Our AI generates a detailed Vedic horoscope (Kundali), including planetary positions and in-depth analysis of your life path, strengths, and challenges.' },
-  { id: FeatureId.PALMISTRY, title: 'AI Palm Reading', description: 'Upload a clear photo of your dominant hand. The AI analyzes your major lines (Heart, Head, Life, etc.) and mounts to reveal insights into your character and destiny.' },
-  { id: FeatureId.FACE_READING, title: 'AI Face Reading', description: 'Upload a clear photo of your face. The AI studies your facial features—forehead, eyes, nose, and more—to provide insights into your personality and potential.' },
-  { id: FeatureId.HANDWRITING_ANALYSIS, title: 'AI Handwriting Analysis', description: 'Upload a sample of your handwriting. The AI analyzes pressure, slant, size, and spacing to reveal deep insights into your personality and subconscious mind.' },
-  { id: FeatureId.TAROT, title: 'AI Tarot Reading', description: 'Choose a spread (e.g., Past-Present-Future), then shuffle and draw cards. Our AI provides a nuanced interpretation of each card in its position and a summary of your reading.' },
-  { id: FeatureId.SACRED_UNION, title: 'Sacred Union Insights', description: 'Select your and your partner\'s zodiac signs to explore your spiritual and intimate connection, with guidance inspired by the wisdom of the Kamasutra.' },
-  { id: FeatureId.MANTRA_GENERATOR, title: 'AI Mantra Generator', description: 'Describe your goal or intention (e.g., "for focus," "for peace"). The AI will generate a personalized Sanskrit mantra with meanings and audio pronunciation.' },
-  { id: FeatureId.COMPATIBILITY, title: 'Zodiac Compatibility', description: 'Select two zodiac signs and a relationship context (e.g., Love, Work). The AI provides a tailored analysis of the dynamic between the signs.' },
-  { id: FeatureId.MOLEOLOGY, title: 'Moleology AI', description: 'Select your mole locations on an interactive body map. Our AI provides insights into what these marks signify about your personality, fortune, and life path.' },
-  { id: FeatureId.DATING, title: 'Cosmic Matchmaking', description: 'Enter the birth details for two people. The AI performs a detailed astrological synastry (Kundali matching) to assess compatibility for a deep, meaningful connection.' },
-  { id: FeatureId.IMAGE_GENERATOR, title: 'Cosmic Art Generator', description: 'Describe a mystical vision or use an analysis from another tool to generate a prompt. The AI will create a unique, beautiful piece of cosmic art for you.' },
-];
-
-
 const Tour: React.FC<TourProps> = ({ onFeatureSelect }) => {
+  const [openAccordion, setOpenAccordion] = useState<FeatureId | null>(null);
+
+  const handleAccordionClick = (featureId: FeatureId) => {
+    setOpenAccordion(openAccordion === featureId ? null : featureId);
+  };
+  
+  // Filter out non-tool features for this list
+  const tools = features.filter(f => ![FeatureId.HOME, FeatureId.TOUR, FeatureId.PACKAGES].includes(f.id));
+
   return (
     <div className="max-w-5xl mx-auto animate-[fadeIn_0.5s_ease-in-out]">
       <div className="text-center mb-12">
@@ -51,40 +46,64 @@ const Tour: React.FC<TourProps> = ({ onFeatureSelect }) => {
           </div>
           <div className="p-6 bg-gray-900/30 rounded-xl">
             <div className="text-4xl mb-3">2.</div>
-            <h3 className="text-xl font-playfair font-semibold text-white mb-2">Provide Your Input</h3>
-            <p className="text-gray-400">Enter your unique details—whether it's your birth information, a photo of your palm, or a simple intention for a mantra.</p>
+            <h3 className="text-xl font-playfair font-semibold text-white mb-2">Get a Preview</h3>
+            <p className="text-gray-400">Explore a sample reading to see the depth of insights available. Get the first section for free to understand the power of our analysis.</p>
           </div>
           <div className="p-6 bg-gray-900/30 rounded-xl">
             <div className="text-4xl mb-3">3.</div>
-            <h3 className="text-xl font-playfair font-semibold text-white mb-2">Receive AI-Powered Wisdom</h3>
-            <p className="text-gray-400">Our AI analyzes your input and delivers a detailed, structured report filled with personalized insights, guidance, and spiritual context.</p>
+            <h3 className="text-xl font-playfair font-semibold text-white mb-2">Unlock Full Wisdom</h3>
+            <p className="text-gray-400">Select a Cosmic Reading package to receive your complete, personalized report, combining insights from multiple esoteric arts.</p>
           </div>
-        </div>
-        <div className="mt-8 text-center p-4 bg-yellow-900/20 border border-yellow-400/30 rounded-lg">
-          <p className="text-yellow-300">
-            <span className="font-bold">Please Note:</span> Print and Share Report for all Analysis are not enabled right now, it's planned for future releases.
-          </p>
         </div>
       </section>
 
       {/* Discover Our Tools Section */}
       <section className="mb-16">
         <h2 className="text-3xl font-playfair font-bold text-center text-yellow-400 mb-8">Discover Our Tools</h2>
-        <div className="space-y-6">
-          {tools.map((tool) => (
-            <div key={tool.id} className="mystic-card p-6 flex flex-col md:flex-row gap-6 items-center !transform-none !shadow-none hover:!border-yellow-400/50">
-              <div className="flex-grow">
-                <h3 className="text-xl font-playfair font-bold text-white">{tool.title}</h3>
-                <p className="text-gray-400 mt-1">{tool.description}</p>
+        <div className="space-y-4">
+          {tools.sort((a, b) => a.title.localeCompare(b.title)).map((tool) => {
+            const isOpen = openAccordion === tool.id;
+            return (
+              <div key={tool.id} className="bg-gray-900/50 rounded-lg border border-gray-700/50 overflow-hidden transition-all duration-300">
+                <button
+                  onClick={() => handleAccordionClick(tool.id)}
+                  className="w-full text-left p-4 md:p-6 flex justify-between items-center cursor-pointer hover:bg-gray-800/40"
+                  aria-expanded={isOpen}
+                  aria-controls={`accordion-content-${tool.id}`}
+                >
+                  <h3 className="text-xl font-playfair font-bold text-white">{tool.title}</h3>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24"
+                    strokeWidth={2.5}
+                    stroke="currentColor"
+                    className={`w-6 h-6 text-yellow-400 transform transition-transform duration-300 ${
+                      isOpen ? 'rotate-180' : ''
+                    }`}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                  </svg>
+                </button>
+                <div
+                  id={`accordion-content-${tool.id}`}
+                  className={`accordion-content ${isOpen ? 'open' : ''}`}
+                >
+                  <div>
+                    <div className="p-4 md:p-6 pt-2 border-t border-gray-700/30 flex flex-col md:flex-row gap-6 items-center">
+                        <p className="text-gray-400 flex-grow">{tool.description}</p>
+                        <button
+                            onClick={() => onFeatureSelect(tool.id)}
+                            className="bg-yellow-500 text-gray-900 font-bold py-2 px-6 rounded-full hover:bg-yellow-400 transition-colors flex-shrink-0"
+                        >
+                            Preview
+                        </button>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <button
-                onClick={() => onFeatureSelect(tool.id)}
-                className="bg-yellow-500 text-gray-900 font-bold py-2 px-6 rounded-full hover:bg-yellow-400 transition-colors flex-shrink-0"
-              >
-                Try Now
-              </button>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
