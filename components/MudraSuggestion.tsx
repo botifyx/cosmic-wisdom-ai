@@ -7,12 +7,12 @@ import { HandMudraAnalysis, UserContext } from '../types';
 type Gender = 'Male' | 'Female' | 'Unisex';
 
 interface MudraSuggestionProps {
-  analysisText: string;
-  featureName: string;
-  // Fix: Add userGender to props to be passed to the API.
-  userGender: Gender | null;
-  // Fix: Add userContext to the props interface
-  userContext: UserContext | null;
+    analysisText: string;
+    featureName: string;
+    // Fix: Add userGender to props to be passed to the API.
+    userGender: Gender | null;
+    // Fix: Add userContext to the props interface
+    userContext: UserContext | null;
 }
 
 const MudraSuggestion: React.FC<MudraSuggestionProps> = ({ analysisText, featureName, userGender, userContext }) => {
@@ -35,7 +35,7 @@ const MudraSuggestion: React.FC<MudraSuggestionProps> = ({ analysisText, feature
         }
         setIsLoading(false);
     }, [analysisText, featureName, userGender, userContext]);
-    
+
     return (
         <>
             <div className="p-6 bg-gradient-to-br from-blue-500/10 via-teal-500/10 to-slate-900/20 rounded-2xl border border-blue-400/20 text-center h-full flex flex-col justify-between">
@@ -59,29 +59,29 @@ const MudraSuggestion: React.FC<MudraSuggestionProps> = ({ analysisText, feature
                         </>
                     ) : 'Reveal My Cosmic Mudra'}
                 </button>
-                 {error && <p className="text-red-400 text-sm mt-2">{error}</p>}
+                {error && <p className="text-red-400 text-sm mt-2">{error}</p>}
             </div>
 
             {mudraData && (
-                <div 
+                <div
                     className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-[fadeIn_0.3s_ease-out]"
                     onClick={() => setMudraData(null)}
                     role="dialog"
                     aria-modal="true"
                     aria-labelledby="mudra-modal-title"
                 >
-                    <div 
+                    <div
                         className="bg-slate-900 border border-blue-400/30 rounded-2xl shadow-2xl w-full max-w-2xl p-6 relative mystic-card max-h-[90vh] overflow-y-auto custom-scrollbar"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <button 
+                        <button
                             onClick={() => setMudraData(null)}
                             className="absolute top-3 right-3 text-gray-400 hover:text-white transition-colors z-10"
                             aria-label="Close modal"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
                         </button>
-                        
+
                         <div className="grid md:grid-cols-2 gap-6 items-start">
                             <div className="flex flex-col items-center">
                                 {mudraData.imageUrl ? (

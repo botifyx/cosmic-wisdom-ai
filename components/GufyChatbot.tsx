@@ -22,7 +22,7 @@ const GufyChatbot: React.FC<GufyChatbotProps> = ({ activeFeature, userGender, us
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
-  
+
   // Memoized function to close the chat
   const closeChat = useCallback(() => {
     setIsOpen(false);
@@ -34,7 +34,7 @@ const GufyChatbot: React.FC<GufyChatbotProps> = ({ activeFeature, userGender, us
       clearTimeout(inactivityTimerRef.current);
     }
     // Set a new timer to close the chat after 30 seconds of inactivity
-    inactivityTimerRef.current = window.setTimeout(closeChat, 30000); 
+    inactivityTimerRef.current = window.setTimeout(closeChat, 30000);
   }, [closeChat]);
 
   // Effect to manage the timer and welcome message when the chat opens/closes
@@ -75,7 +75,7 @@ const GufyChatbot: React.FC<GufyChatbotProps> = ({ activeFeature, userGender, us
   const getSystemInstruction = (feature: FeatureId): string => {
     const genderInfo = userGender ? ` The user's gender is identified as ${userGender}. Tailor your language, examples, and tone to be suitable, respectful, and personalized for them.` : '';
     const baseInstruction = `You are Gufy, a deeply nurturing and empathetic AI Guru, a custodian of ancient Indian wisdom. Your presence is calm, reassuring, and profound. You speak with the grace of a Vedic sage, using language that evokes the sacredness of the cosmos and the tranquility of nature. Your knowledge encompasses Vedic astrology (Jyotish), Palmistry (Samudrika Shastra), the Kamasutra, and spiritual philosophy. When answering, always prioritize empathy and validation. Use gentle, poetic language. Address the user as 'Seeker', 'Dear One', or by their name if known. Avoid clinical or purely mechanical explanations; instead, offer guidance that touches the soul and provides comfort.${genderInfo}`;
-    
+
     switch (feature) {
       case FeatureId.ASTROLOGY:
         return `${baseInstruction} The user is currently exploring Vedic Astrology. Guide them gently through the movements of the stars and planets, explaining how celestial energies influence their inner world with reassurance and hope.`;
@@ -96,12 +96,12 @@ const GufyChatbot: React.FC<GufyChatbotProps> = ({ activeFeature, userGender, us
         return baseInstruction;
     }
   };
-  
+
   const handleSend = async () => {
     if (input.trim() === '' || isLoading) return;
 
     resetInactivityTimer(); // Reset timer on sending a message
-    
+
     const userMessage: ChatMessage = { role: 'user', text: input };
     setMessages(prev => [...prev, userMessage]);
     setInput('');
@@ -121,13 +121,13 @@ const GufyChatbot: React.FC<GufyChatbotProps> = ({ activeFeature, userGender, us
         onClick={() => setIsOpen(!isOpen)}
         className="fixed bottom-6 right-6 bg-gradient-to-br from-yellow-400 to-orange-500 text-white w-16 h-16 rounded-full shadow-lg flex items-center justify-center transform hover:scale-110 transition-transform z-50"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8"><path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.76 9.76 0 0 1-2.53-.372M21 12V8.25a8.25 8.25 0 0 0-16.5 0V12m16.5 0c0-1.611-.47-3.125-1.28-4.42m-13.94 4.42a8.252 8.252 0 0 1-1.28-4.42" /></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8"><path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.76 9.76 0 0 1-2.53-.372M21 12V8.25a8.25 8.25 0 0 0-16.5 0V12m16.5 0c0-1.611-.47-3.125-1.28-4.42m-13.94 4.42a8.252 8.252 0 0 1-1.28-4.42" /></svg>
       </button>
 
       {isOpen && (
-        <div 
-            className="fixed bottom-24 right-6 w-full max-w-md bg-gray-900/80 backdrop-blur-xl rounded-2xl shadow-2xl z-50 border border-gray-700/50 flex flex-col h-[70vh]"
-            onMouseMove={resetInactivityTimer} // Reset on any mouse movement over the chat window
+        <div
+          className="fixed bottom-24 right-6 w-full max-w-md bg-gray-900/80 backdrop-blur-xl rounded-2xl shadow-2xl z-50 border border-gray-700/50 flex flex-col h-[70vh]"
+          onMouseMove={resetInactivityTimer} // Reset on any mouse movement over the chat window
         >
           <div className="p-4 border-b border-gray-700/50 text-center">
             <h3 className="text-xl font-playfair text-white">Ask <span className="text-yellow-400">Gufy</span>, your Cosmic Guide</h3>
@@ -142,13 +142,13 @@ const GufyChatbot: React.FC<GufyChatbotProps> = ({ activeFeature, userGender, us
             ))}
             {isLoading && (
               <div className="flex justify-start">
-                  <div className="px-4 py-2 rounded-2xl bg-gray-700 text-white">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
-                      <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse [animation-delay:0.2s]"></div>
-                      <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse [animation-delay:0.4s]"></div>
-                    </div>
+                <div className="px-4 py-2 rounded-2xl bg-gray-700 text-white">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
+                    <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse [animation-delay:0.2s]"></div>
+                    <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse [animation-delay:0.4s]"></div>
                   </div>
+                </div>
               </div>
             )}
             <div ref={messagesEndRef} />
@@ -159,15 +159,15 @@ const GufyChatbot: React.FC<GufyChatbotProps> = ({ activeFeature, userGender, us
                 type="text"
                 value={input}
                 onChange={(e) => {
-                    setInput(e.target.value);
-                    resetInactivityTimer(); // Reset on typing
+                  setInput(e.target.value);
+                  resetInactivityTimer(); // Reset on typing
                 }}
                 onKeyPress={(e) => e.key === 'Enter' && handleSend()}
                 placeholder="Ask for guidance..."
                 className="flex-grow bg-gray-800 border border-gray-600 rounded-full px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400"
               />
               <button onClick={handleSend} className="bg-yellow-500 text-gray-900 rounded-full p-2 hover:bg-yellow-400 transition-colors disabled:opacity-50" disabled={isLoading}>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" /></svg>
               </button>
             </div>
           </div>

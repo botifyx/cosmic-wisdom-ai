@@ -1,5 +1,5 @@
-import { db, auth } from './firebase';
-import { doc, updateDoc, setDoc } from 'firebase/firestore';
+import { db, auth } from "./firebase";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 
 declare global {
   interface Window {
@@ -9,8 +9,16 @@ declare global {
 
 const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID;
 
+/* ----------------------------------------
+   Load Razorpay SDK
+---------------------------------------- */
 export const initializeRazorpay = (): Promise<boolean> => {
   return new Promise((resolve) => {
+    if (window.Razorpay) {
+      resolve(true);
+      return;
+    }
+
     const script = document.createElement("script");
     script.src = "https://checkout.razorpay.com/v1/checkout.js";
     script.onload = () => resolve(true);
@@ -19,99 +27,117 @@ export const initializeRazorpay = (): Promise<boolean> => {
   });
 };
 
+/* ----------------------------------------
+   Open Razorpay Checkout (One-time payment)
+---------------------------------------- */
 export const createSubscription = async (
-  planId: string, 
-  userEmail: string,
-  amount: number,
-  currency: string,
-  onSuccess: (response: any) => void, 
+  planDetails: {
+    id: string;
+    name: string;
+    price: number;
+    currency: string;
+    interval: "monthly" | "yearly";
+  },
+  onSuccess: (response: any) => void,
   onFailure: (error: any) => void
 ) => {
-  if (!window.Razorpay) {
-    const res = await initializeRazorpay();
-    if (!res) {
-      onFailure({ message: "Razorpay SDK failed to load. Check your internet connection." });
-      return;
-    }
+  const user = auth.currentUser;
+  if (!user) {
+    onFailure({ message: "User not logged in" });
+    return;
   }
 
-  // NOTE: In a real production app, you would verify stock/logic on backend 
-  // and create the subscription ID via API there, then pass it here.
-  // For this client-side integration task, we will simulate the subscription ID 
-  // or use a dummy flow if backend is strictly not available.
-  // Ideally: const subId = await api.createSubscription({ planId });
+  const sdkLoaded = await initializeRazorpay();
+  if (!sdkLoaded) {
+    onFailure({ message: "Razorpay SDK failed to load" });
+    return;
+  }
 
-  // Mocking a subscription ID for demo purposes if backend isn't set up to generate it.
-  // Mocking: We cannot create a valid subscription_id client-side without the Secret Key.
-  // Using a random string ("sub_...") causes a 400 Bad Request from Razorpay Standard Checkout.
-  // FIX: For client-side simulation, we will use "One-Time Payment" mode which works with just Key ID.
-  
-  const options: any = {
+  const options = {
     key: RAZORPAY_KEY_ID,
-    // subscription_id: "sub_" + Math.random().toString(36).substring(7), // REMOVED: Causes 400 error
-    amount: amount * 100, // Amount in lowest denomination (e.g., paise, cents)
-    currency: currency,
+    amount: planDetails.price * 100,
+    currency: planDetails.currency,
     name: "Taintra Cosmic Wisdom",
-    description: "Premium Subscription (Simulated)",
+    description: planDetails.name,
+
+    prefill: {
+      email: user.email,
+    },
+
     handler: function (response: any) {
       onSuccess(response);
     },
-    prefill: {
-      email: userEmail,
-    },
-    theme: {
-        color: "#F37254",
-    },
+
     modal: {
-        ondismiss: function() {
-            onFailure({ reason: 'cancelled' });
-        }
-    }
+      ondismiss: function () {
+        onFailure({ reason: "cancelled" });
+      },
+    },
+
+    theme: {
+      color: "#F37254",
+    },
   };
 
-  const rzp1 = new window.Razorpay(options);
-  rzp1.on('payment.failed', function (response: any) {
+  const razorpay = new window.Razorpay(options);
+
+  razorpay.on("payment.failed", function (response: any) {
     onFailure(response.error);
   });
-  rzp1.open();
+
+  razorpay.open();
 };
 
-export const processPaymentSuccess = async (userId: string, response: any, planDetails: any) => {
-    // Save to Firestore
-    // This is where we securely save the 'active' status.
-    // In production, verify signature on backend.
-    
-    // Determining period based on plan interval
-    const now = new Date();
-    const endDate = new Date();
-    if (planDetails.interval === 'yearly') {
-        endDate.setFullYear(now.getFullYear() + 1);
-    } else {
-        endDate.setMonth(now.getMonth() + 1);
-    }
+/* ----------------------------------------
+   Save subscription after payment success
+---------------------------------------- */
+export const processPaymentSuccess = async (
+  response: any,
+  planDetails: {
+    id: string;
+    name: string;
+    price: number;
+    currency: string;
+    interval: "monthly" | "yearly";
+  }
+) => {
+  const user = auth.currentUser;
+  if (!user) throw new Error("User not authenticated");
 
-    const subscriptionData = {
-        userId,
-        planId: planDetails.id,
-        status: 'active',
-        razorpaySubscriptionId: response.razorpay_subscription_id || response.razorpay_payment_id, // Fallback for one-time
-        currentStart: now,
-        currentEnd: endDate,
-        currency: planDetails.currency,
-        amount: planDetails.price,
-        lastPaymentId: response.razorpay_payment_id,
-        signature: response.razorpay_signature // Store for audit
-    };
+  const now = new Date();
+  const endDate = new Date();
 
-    // Update User Document with Subscription
-    // Often acceptable to store critical entitlement info directly on user or subcollection
-    await setDoc(doc(db, "users", userId), { 
-        subscription: subscriptionData 
-    }, { merge: true });
+  planDetails.interval === "yearly"
+    ? endDate.setFullYear(now.getFullYear() + 1)
+    : endDate.setMonth(now.getMonth() + 1);
 
-    // Also could log to a 'transactions' collection
-    await setDoc(doc(db, `users/${userId}/transactions`, response.razorpay_payment_id), {
-        ...response,
-        timestamp: new Date()
-    });
+  const subscriptionDoc = {
+    userId: user.uid,
+    planId: planDetails.id,
+    planName: planDetails.name,
+    interval: planDetails.interval,
+
+    status: "active",
+    amount: planDetails.price,
+    currency: planDetails.currency,
+
+    currentStart: now,
+    currentEnd: endDate,
+
+    lastPayment: {
+      paymentId: response.razorpay_payment_id,
+      orderId: response.razorpay_order_id || null,
+      signature: response.razorpay_signature || null,
+      paidAt: now,
+    },
+
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  };
+
+  await setDoc(doc(db, "subscriptions", user.uid), subscriptionDoc, {
+    merge: true,
+  });
+
+  console.log("✅ Subscription saved successfully");
 };

@@ -13,7 +13,7 @@ const HighlightsSection: React.FC<HighlightsSectionProps> = ({ onFeatureSelect }
       <h2 className="text-3xl md:text-4xl font-bold font-playfair text-white mb-2">Unique AI-Powered Experiences</h2>
       <p className="text-gray-400 mb-10 max-w-3xl mx-auto">Explore our one-of-a-kind tools that transform ancient wisdom into a deeply personal and creative journey.</p>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-        
+
         {/* Cosmic Art Generator Highlight */}
         <div className="highlight-card p-8 flex flex-col items-center text-center">
           <div className="w-16 h-16 mb-4 rounded-full bg-purple-500/10 flex items-center justify-center border border-purple-500/30">
@@ -34,7 +34,7 @@ const HighlightsSection: React.FC<HighlightsSectionProps> = ({ onFeatureSelect }
         {/* Tour Highlight - replacing Mudra for now */}
         <div className="highlight-card p-8 flex flex-col items-center text-center">
           <div className="w-16 h-16 mb-4 rounded-full bg-blue-500/10 flex items-center justify-center border border-blue-500/30">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-blue-300"><path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm.75-13.5a.75.75 0 1 0-1.5 0v6a.75.75 0 0 0 1.5 0v-6ZM12 15.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" /></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-blue-300"><path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm.75-13.5a.75.75 0 1 0-1.5 0v6a.75.75 0 0 0 1.5 0v-6ZM12 15.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" /></svg>
           </div>
           <h3 className="text-2xl font-bold font-playfair text-white mb-3">How It All Works</h3>
           <p className="text-gray-400 text-base mb-6 flex-grow">

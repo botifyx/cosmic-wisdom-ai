@@ -41,7 +41,7 @@ const TrialReport: React.FC<TrialReportProps> = ({ pkg, userName, userGender, on
                     {isFullAccess ? "Your Full" : "Your Trial"} <span className="logo-text-gradient">Cosmic Reading</span>
                 </h1>
                 <p className="mt-4 text-lg text-gray-300">
-                    {isFullAccess 
+                    {isFullAccess
                         ? `Congratulations, ${userName}! Here is your complete, unlocked report for the ${pkg.name} package.`
                         : `Here is a glimpse of the cosmic wisdom waiting for you in your ${pkg.name} package.`
                     }
@@ -50,7 +50,7 @@ const TrialReport: React.FC<TrialReportProps> = ({ pkg, userName, userGender, on
 
             <div className="p-6 bg-gray-900/50 backdrop-blur-md rounded-2xl border border-gray-700/50 space-y-6">
                 {isLoading && (
-                     <div className="flex flex-col justify-center items-center h-48">
+                    <div className="flex flex-col justify-center items-center h-48">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-400"></div>
                         <p className="mt-4 text-yellow-400">Preparing your insights...</p>
                     </div>
@@ -62,10 +62,10 @@ const TrialReport: React.FC<TrialReportProps> = ({ pkg, userName, userGender, on
                         <p className="mt-2 text-gray-300">{trialAnalysis.summary}</p>
                     </div>
                 )}
-                
+
                 <div>
                     <h3 className="text-xl font-semibold text-white text-center mb-4">Your Full Report Includes:</h3>
-                     <div className="space-y-4">
+                    <div className="space-y-4">
                         {includedFeatures.map((feature, index) => {
                             const isUnlockedForTrial = feature.id === previewFeatureId;
                             const isLocked = !isFullAccess && !isUnlockedForTrial;
@@ -83,7 +83,7 @@ const TrialReport: React.FC<TrialReportProps> = ({ pkg, userName, userGender, on
                                     </div>
                                     {isLocked && index === 1 && (
                                         <div className="locked-indicator">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-yellow-400"><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" /></svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-yellow-400"><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" /></svg>
                                         </div>
                                     )}
                                 </div>
@@ -105,8 +105,8 @@ const TrialReport: React.FC<TrialReportProps> = ({ pkg, userName, userGender, on
                         </>
                     ) : (
                         <>
-                             <p className="text-lg text-yellow-300 mb-4">Ready to unlock your full cosmic blueprint?</p>
-                             <button
+                            <p className="text-lg text-yellow-300 mb-4">Ready to unlock your full cosmic blueprint?</p>
+                            <button
                                 onClick={onPurchase}
                                 className="w-full max-w-md mx-auto bg-gradient-to-r from-yellow-500 to-orange-500 text-gray-900 font-bold py-3 px-4 rounded-lg hover:scale-105 transition-transform duration-300 shadow-lg shadow-yellow-500/20"
                             >

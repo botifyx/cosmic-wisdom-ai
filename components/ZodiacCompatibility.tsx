@@ -6,8 +6,8 @@ import TattooSuggestion from './TattooSuggestion';
 import MudraSuggestion from './MudraSuggestion';
 
 const ZODIAC_SIGNS = [
-  "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
-  "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"
+    "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
+    "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"
 ];
 
 const RELATIONSHIP_CONTEXTS = ["Love", "Friendship", "Work", "Marriage"];
@@ -15,14 +15,14 @@ const RELATIONSHIP_CONTEXTS = ["Love", "Friendship", "Work", "Marriage"];
 type Gender = 'Male' | 'Female' | 'Unisex';
 
 const CompatibilityIcon = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24" strokeWidth={1.5} stroke="currentColor" {...props}><path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" /></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}><path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" /></svg>
 );
 
 interface ZodiacCompatibilityProps {
-  onSuggestTattoo: (details: { prompt: string; placement: string; aspectRatio: string; }) => void;
-  onSuggestArt: (details: { prompt: string; aspectRatio: string; }) => void;
-  userGender: Gender | null;
-  userContext: UserContext | null;
+    onSuggestTattoo: (details: { prompt: string; placement: string; aspectRatio: string; }) => void;
+    onSuggestArt: (details: { prompt: string; aspectRatio: string; }) => void;
+    userGender: Gender | null;
+    userContext: UserContext | null;
 }
 
 const ZodiacCompatibility: React.FC<ZodiacCompatibilityProps> = ({ onSuggestTattoo, onSuggestArt, userGender, userContext }) => {
@@ -37,7 +37,7 @@ const ZodiacCompatibility: React.FC<ZodiacCompatibilityProps> = ({ onSuggestTatt
         setIsLoading(true);
         setError('');
         setAnalysis(null);
-        
+
         const result = await getZodiacCompatibilityAnalysis(sign1, sign2, context, userContext);
         if (result) {
             setAnalysis(result);
@@ -51,7 +51,7 @@ const ZodiacCompatibility: React.FC<ZodiacCompatibilityProps> = ({ onSuggestTatt
         if (!analysis) return "";
         return analysis.sections.map(s => `${s.title}: ${s.description}`).join('\n');
     };
-    
+
     const handlePrint = () => { window.print(); };
 
     const handleShare = () => {
@@ -63,11 +63,11 @@ const ZodiacCompatibility: React.FC<ZodiacCompatibilityProps> = ({ onSuggestTatt
                 .catch(err => console.error('Failed to copy summary: ', err));
         }
     };
-    
+
     const AnalysisAccordionItem: React.FC<{ section: ZodiacCompatibilitySection; defaultOpen?: boolean; index: number; }> = ({ section, defaultOpen = false, index }) => {
         const [isOpen, setIsOpen] = useState(defaultOpen);
         const contentRef = useRef<HTMLDivElement>(null);
-        
+
         const icons: { [key: string]: string } = {
             vibe: '✨', strengths: '💪', challenges: '🌪️', tips: '💡', conclusion: '📜'
         };
@@ -83,7 +83,7 @@ const ZodiacCompatibility: React.FC<ZodiacCompatibilityProps> = ({ onSuggestTatt
                         <span className="text-xl">{icons[section.category] || '✧'}</span>
                         <h4 className={`font-bold text-lg text-yellow-300`}>{section.title}</h4>
                     </div>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24" strokeWidth={2.5} stroke="currentColor" className={`w-5 h-5 text-gray-400 transform transition-transform duration-300 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`}><path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className={`w-5 h-5 text-gray-400 transform transition-transform duration-300 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`}><path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>
                 </button>
                 <div
                     ref={contentRef}
@@ -110,13 +110,13 @@ const ZodiacCompatibility: React.FC<ZodiacCompatibilityProps> = ({ onSuggestTatt
 
                     <div className="space-y-4 max-w-lg mx-auto">
                         <div className="grid grid-cols-2 gap-4">
-                             <div>
+                            <div>
                                 <label className="block text-sm font-medium text-gray-300 mb-1">Sign One</label>
                                 <select value={sign1} onChange={(e) => setSign1(e.target.value)} className="w-full bg-gray-800 border border-gray-600 rounded-lg p-2.5 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400">
                                     {ZODIAC_SIGNS.map(s => <option key={s}>{s}</option>)}
                                 </select>
                             </div>
-                             <div>
+                            <div>
                                 <label className="block text-sm font-medium text-gray-300 mb-1">Sign Two</label>
                                 <select value={sign2} onChange={(e) => setSign2(e.target.value)} className="w-full bg-gray-800 border border-gray-600 rounded-lg p-2.5 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400">
                                     {ZODIAC_SIGNS.map(s => <option key={s}>{s}</option>)}
@@ -125,7 +125,7 @@ const ZodiacCompatibility: React.FC<ZodiacCompatibilityProps> = ({ onSuggestTatt
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-300 mb-1">Relationship Context</label>
-                             <select value={context} onChange={(e) => setContext(e.target.value)} className="w-full bg-gray-800 border border-gray-600 rounded-lg p-2.5 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                            <select value={context} onChange={(e) => setContext(e.target.value)} className="w-full bg-gray-800 border border-gray-600 rounded-lg p-2.5 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400">
                                 {RELATIONSHIP_CONTEXTS.map(c => <option key={c}>{c}</option>)}
                             </select>
                         </div>
@@ -147,9 +147,9 @@ const ZodiacCompatibility: React.FC<ZodiacCompatibilityProps> = ({ onSuggestTatt
                     <p className="mt-4 text-yellow-400 text-lg">Aligning the stars for your analysis...</p>
                 </div>
             )}
-            
+
             {analysis && (
-                 <div className="printable-report">
+                <div className="printable-report">
                     <div className="animate-[fadeIn_1s_ease-in-out]">
                         <div className="text-center mb-8">
                             <h2 className="text-4xl font-bold font-playfair text-white">Compatibility: {sign1} & {sign2}</h2>
@@ -157,24 +157,24 @@ const ZodiacCompatibility: React.FC<ZodiacCompatibilityProps> = ({ onSuggestTatt
                         </div>
                         <div className="p-6 bg-gray-900/50 backdrop-blur-md rounded-2xl border border-gray-700/50 space-y-4">
                             {analysis.sections.map((section, index) => (
-                                 <AnalysisAccordionItem 
-                                    key={section.category} 
-                                    section={section} 
+                                <AnalysisAccordionItem
+                                    key={section.category}
+                                    section={section}
                                     defaultOpen={index === 0}
                                     index={index}
                                 />
                             ))}
                         </div>
-                        
+
                         <div className="mt-8 animate-[fadeIn_1s_ease-in-out] print-hidden">
                             <div className="grid md:grid-cols-3 gap-4">
-                                <TattooSuggestion 
+                                <TattooSuggestion
                                     analysisText={getAnalysisTextForSuggestion()}
                                     onGenerateTattoo={onSuggestTattoo}
                                     featureName="ZodiacCompatibility"
                                     userContext={userContext}
                                 />
-                                <ArtSuggestion 
+                                <ArtSuggestion
                                     analysisText={getAnalysisTextForSuggestion()}
                                     onGenerateArt={onSuggestArt}
                                     featureName="ZodiacCompatibility"
@@ -188,7 +188,7 @@ const ZodiacCompatibility: React.FC<ZodiacCompatibilityProps> = ({ onSuggestTatt
                                 />
                             </div>
                         </div>
-                        
+
                         <div className="text-center mt-8 space-y-4 md:space-y-0 md:space-x-4 print-hidden">
                             <button onClick={handlePrint} className="bg-transparent border border-yellow-400 text-yellow-400 font-bold py-2 px-6 rounded-lg hover:bg-yellow-400/10 transition-colors">
                                 Print Report

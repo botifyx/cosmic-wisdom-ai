@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FeatureId, UserState } from '../types';
+import { FeatureId, UserState, UserSubscription } from '../types';
 import { createSubscription, processPaymentSuccess } from '../services/razorpay';
 import { PLANS } from '../services/subscription';
 import { PAYMENT_TERMS } from '../services/terms';
@@ -10,13 +10,14 @@ interface PackagesProps {
     onSelectPackage: (pkg: any) => void; // Keeping generic for now as we transition
     userState: UserState;
     userCountry?: string;
+    userSubscription: UserSubscription | null;
 }
 
 export const packages = PLANS; // Re-export for compatibility if needed elsewhere
 
 export type Package = typeof PLANS[0];
 
-const Packages: React.FC<PackagesProps> = ({ onSelectPackage, userState, userCountry }) => {
+const Packages: React.FC<PackagesProps> = ({ onSelectPackage, userState, userCountry, userSubscription }) => {
     const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
     const [agreedToTerms, setAgreedToTerms] = useState(false);
     const [showTerms, setShowTerms] = useState(false);
@@ -65,26 +66,29 @@ const Packages: React.FC<PackagesProps> = ({ onSelectPackage, userState, userCou
         }
 
         setLoadingPlan(plan.id);
-        
+
         // Pass the actual amount and currency to the payment processor
         const price = plan.prices[currencyCode];
 
         await createSubscription(
-            plan.id,
-            user.email,
-            price,
-            currencyCode,
+            {
+                id: plan.id,
+                name: plan.name,
+                price: price,
+                currency: currencyCode,
+                interval: plan.interval
+            },
             async (response) => {
                 console.log("Payment Success", response);
-                await processPaymentSuccess(user.uid, response, { ...plan, price, currency: currencyCode });
+                await processPaymentSuccess(response, { ...plan, price, currency: currencyCode });
                 setLoadingPlan(null);
-                openModal('success', 'Subscription Active', 'Your subscription has been activated successfully! Enjoy the cosmic wisdom.', () => {
-                     window.location.reload();
+                openModal('success', 'Subscription Active', 'Your subscription has been activated successfully!', () => {
+                    window.location.reload();
                 });
             },
             (error) => {
                 console.error("Payment Failure", error);
-                
+
                 let title = "Payment Failed";
                 let message = "We could not process your payment. Please try again.";
 
@@ -105,7 +109,7 @@ const Packages: React.FC<PackagesProps> = ({ onSelectPackage, userState, userCou
 
     const getButtonText = (state: UserState, planId: string) => {
         if (loadingPlan === planId) return 'Processing...';
-        if (state === 'full_access') return 'Current Plan'; // Simplified logic
+        if (userSubscription && userSubscription.planId === planId && userSubscription.status === 'active') return 'Current Plan';
         return 'Subscribe Now';
     };
 
@@ -122,12 +126,12 @@ const Packages: React.FC<PackagesProps> = ({ onSelectPackage, userState, userCou
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
                 {PLANS.map((plan) => (
-                    <div 
+                    <div
                         key={plan.id}
                         className="mystic-card flex flex-col p-8 text-center border-t-4 relative"
-                        style={{ 
+                        style={{
                             borderColor: plan.id === 'plan_premium' ? '#A855F7' : '#EAB308',
-                             // Simplified dynamic styling
+                            // Simplified dynamic styling
                         } as React.CSSProperties}
                     >
                         {plan.id === 'plan_premium' && (
@@ -140,9 +144,9 @@ const Packages: React.FC<PackagesProps> = ({ onSelectPackage, userState, userCou
                             {currencySymbol}{plan.prices[currencyCode]}
                             <span className="text-lg text-gray-400 font-normal">/{plan.interval}</span>
                         </div>
-                        
 
-                        
+
+
                         <div className="my-6 text-left flex-grow">
                             <ul className="space-y-3 text-sm text-gray-300">
                                 {plan.features.map((feature, idx) => (
@@ -155,27 +159,26 @@ const Packages: React.FC<PackagesProps> = ({ onSelectPackage, userState, userCou
                                 ))}
                             </ul>
                         </div>
-                        
-                        <button 
+
+                        <button
                             onClick={() => handleSubscribe(plan)}
-                            disabled={loadingPlan !== null || (userState !== 'full_access' && !agreedToTerms)}
-                            className={`w-full font-bold py-3 px-4 rounded-lg transition-all duration-300 ${
-                                plan.id === 'plan_premium' 
-                                ? 'bg-purple-600 hover:bg-purple-500 text-white shadow-lg shadow-purple-900/50' 
+                            disabled={loadingPlan !== null || (userSubscription?.planId === plan.id && userSubscription?.status === 'active') || (userState !== 'full_access' && !agreedToTerms && !userSubscription)}
+                            className={`w-full font-bold py-3 px-4 rounded-lg transition-all duration-300 ${plan.id === 'plan_premium'
+                                ? 'bg-purple-600 hover:bg-purple-500 text-white shadow-lg shadow-purple-900/50'
                                 : 'bg-yellow-500 hover:bg-yellow-400 text-gray-900'
-                            } ${(userState !== 'full_access' && !agreedToTerms) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                } ${(loadingPlan !== null || (userSubscription?.planId === plan.id) || (!agreedToTerms && !userSubscription)) ? 'opacity-50 cursor-not-allowed' : ''}`}
                         >
                             {getButtonText(userState, plan.id)}
                         </button>
                     </div>
                 ))}
             </div>
-            
+
             <div className="mt-8 max-w-2xl mx-auto flex items-center justify-center gap-3 text-gray-400">
-                <input 
-                    type="checkbox" 
-                    id="terms-checkbox" 
-                    checked={agreedToTerms} 
+                <input
+                    type="checkbox"
+                    id="terms-checkbox"
+                    checked={agreedToTerms}
                     onChange={(e) => setAgreedToTerms(e.target.checked)}
                     className="w-5 h-5 rounded border-gray-600 text-yellow-500 focus:ring-yellow-500 bg-gray-800"
                 />
@@ -202,8 +205,8 @@ const Packages: React.FC<PackagesProps> = ({ onSelectPackage, userState, userCou
                     </div>
                 </div>
             )}
-            
-            <Modal 
+
+            <Modal
                 isOpen={modalState.isOpen}
                 onClose={closeModal}
                 type={modalState.type}
@@ -211,7 +214,7 @@ const Packages: React.FC<PackagesProps> = ({ onSelectPackage, userState, userCou
                 message={modalState.message}
                 onAction={modalState.onAction}
             />
-            
+
             <div className="mt-8 text-center text-gray-500 text-sm">
                 <p>Secure payments powered by Razorpay. Cancel anytime.</p>
             </div>

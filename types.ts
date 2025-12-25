@@ -25,7 +25,7 @@ export interface Feature {
   title: string;
   description: string;
   Icon: React.FC<React.SVGProps<SVGSVGElement>>;
-  imageUrl: string;
+  imageUrl?: string;
 }
 
 export interface ChatMessage {

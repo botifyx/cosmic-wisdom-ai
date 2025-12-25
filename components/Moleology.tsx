@@ -13,44 +13,44 @@ type UserGender = 'Male' | 'Female' | 'Unisex';
 type View = 'full' | 'head' | 'torso' | 'arms' | 'legs';
 
 const predictionTypes = [
-  { id: 'personality', label: 'General Personality' },
-  { id: 'love', label: 'Love & Relationships' },
-  { id: 'health', label: 'Health & Wellbeing' },
-  { id: 'wealth', label: 'Wealth & Fortune' },
-  { id: 'career', label: 'Career & Life Path' },
-  { id: 'spirituality', label: 'Spiritual Inclination' },
+    { id: 'personality', label: 'General Personality' },
+    { id: 'love', label: 'Love & Relationships' },
+    { id: 'health', label: 'Health & Wellbeing' },
+    { id: 'wealth', label: 'Wealth & Fortune' },
+    { id: 'career', label: 'Career & Life Path' },
+    { id: 'spirituality', label: 'Spiritual Inclination' },
 ];
 
 const moleSpots: Record<Exclude<View, 'full'>, { id: string; name: string; cx: number; cy: number }[]> = {
-  head: [
-    { id: 'head_top', name: 'Top of Head', cx: 150, cy: 35 }, { id: 'head_forehead', name: 'Forehead', cx: 150, cy: 55 },
-    { id: 'head_right_temple', name: 'Right Temple', cx: 180, cy: 65 }, { id: 'head_left_temple', name: 'Left Temple', cx: 120, cy: 65 },
-    { id: 'head_right_eye', name: 'Right Eye/Brow', cx: 165, cy: 75 }, { id: 'head_left_eye', name: 'Left Eye/Brow', cx: 135, cy: 75 },
-    { id: 'head_nose_tip', name: 'Tip of Nose', cx: 150, cy: 90 }, { id: 'head_right_cheek', name: 'Right Cheek', cx: 175, cy: 100 },
-    { id: 'head_left_cheek', name: 'Left Cheek', cx: 125, cy: 100 }, { id: 'head_upper_lip', name: 'Upper Lip', cx: 150, cy: 110 },
-    { id: 'head_lower_lip', name: 'Lower Lip/Chin', cx: 150, cy: 125 }, { id: 'head_neck', name: 'Neck/Throat', cx: 150, cy: 150 },
-  ],
-  torso: [
-    { id: 'torso_right_collarbone', name: 'Right Collarbone', cx: 180, cy: 50 }, { id: 'torso_left_collarbone', name: 'Left Collarbone', cx: 120, cy: 50 },
-    { id: 'torso_chest_center', name: 'Center of Chest', cx: 150, cy: 90 }, { id: 'torso_right_chest', name: 'Right Chest', cx: 185, cy: 100 },
-    { id: 'torso_left_chest', name: 'Left Chest', cx: 115, cy: 100 }, { id: 'torso_solar_plexus', name: 'Solar Plexus', cx: 150, cy: 155 },
-    { id: 'torso_navel', name: 'Navel Area', cx: 150, cy: 200 }, { id: 'torso_lower_abdomen', name: 'Lower Abdomen', cx: 150, cy: 240 },
-    { id: 'torso_right_side', name: 'Right Side/Ribs', cx: 210, cy: 170 }, { id: 'torso_left_side', name: 'Left Side/Ribs', cx: 90, cy: 170 },
-  ],
-  arms: [
-    { id: 'arms_right_shoulder', name: 'Right Shoulder', cx: 60, cy: 70 }, { id: 'arms_left_shoulder', name: 'Left Shoulder', cx: 240, cy: 70 },
-    { id: 'arms_right_bicep', name: 'Right Bicep', cx: 75, cy: 150 }, { id: 'arms_left_bicep', name: 'Left Bicep', cx: 225, cy: 150 },
-    { id: 'arms_right_elbow', name: 'Right Elbow', cx: 50, cy: 210 }, { id: 'arms_left_elbow', name: 'Left Elbow', cx: 250, cy: 210 },
-    { id: 'arms_right_forearm', name: 'Right Forearm', cx: 80, cy: 270 }, { id: 'arms_left_forearm', name: 'Left Forearm', cx: 220, cy: 270 },
-    { id: 'arms_right_hand', name: 'Right Hand/Wrist', cx: 65, cy: 340 }, { id: 'arms_left_hand', name: 'Left Hand/Wrist', cx: 235, cy: 340 },
-  ],
-  legs: [
-    { id: 'legs_right_hip', name: 'Right Hip/Groin', cx: 180, cy: 50 }, { id: 'legs_left_hip', name: 'Left Hip/Groin', cx: 120, cy: 50 },
-    { id: 'legs_right_thigh', name: 'Right Thigh', cx: 190, cy: 130 }, { id: 'legs_left_thigh', name: 'Left Thigh', cx: 110, cy: 130 },
-    { id: 'legs_right_knee', name: 'Right Knee', cx: 185, cy: 220 }, { id: 'legs_left_knee', name: 'Left Knee', cx: 115, cy: 220 },
-    { id: 'legs_right_calf', name: 'Right Calf', cx: 195, cy: 300 }, { id: 'legs_left_calf', name: 'Left Calf', cx: 105, cy: 300 },
-    { id: 'legs_right_ankle', name: 'Right Ankle', cx: 180, cy: 360 }, { id: 'legs_left_ankle', name: 'Left Ankle', cx: 120, cy: 360 },
-  ],
+    head: [
+        { id: 'head_top', name: 'Top of Head', cx: 150, cy: 35 }, { id: 'head_forehead', name: 'Forehead', cx: 150, cy: 55 },
+        { id: 'head_right_temple', name: 'Right Temple', cx: 180, cy: 65 }, { id: 'head_left_temple', name: 'Left Temple', cx: 120, cy: 65 },
+        { id: 'head_right_eye', name: 'Right Eye/Brow', cx: 165, cy: 75 }, { id: 'head_left_eye', name: 'Left Eye/Brow', cx: 135, cy: 75 },
+        { id: 'head_nose_tip', name: 'Tip of Nose', cx: 150, cy: 90 }, { id: 'head_right_cheek', name: 'Right Cheek', cx: 175, cy: 100 },
+        { id: 'head_left_cheek', name: 'Left Cheek', cx: 125, cy: 100 }, { id: 'head_upper_lip', name: 'Upper Lip', cx: 150, cy: 110 },
+        { id: 'head_lower_lip', name: 'Lower Lip/Chin', cx: 150, cy: 125 }, { id: 'head_neck', name: 'Neck/Throat', cx: 150, cy: 150 },
+    ],
+    torso: [
+        { id: 'torso_right_collarbone', name: 'Right Collarbone', cx: 180, cy: 50 }, { id: 'torso_left_collarbone', name: 'Left Collarbone', cx: 120, cy: 50 },
+        { id: 'torso_chest_center', name: 'Center of Chest', cx: 150, cy: 90 }, { id: 'torso_right_chest', name: 'Right Chest', cx: 185, cy: 100 },
+        { id: 'torso_left_chest', name: 'Left Chest', cx: 115, cy: 100 }, { id: 'torso_solar_plexus', name: 'Solar Plexus', cx: 150, cy: 155 },
+        { id: 'torso_navel', name: 'Navel Area', cx: 150, cy: 200 }, { id: 'torso_lower_abdomen', name: 'Lower Abdomen', cx: 150, cy: 240 },
+        { id: 'torso_right_side', name: 'Right Side/Ribs', cx: 210, cy: 170 }, { id: 'torso_left_side', name: 'Left Side/Ribs', cx: 90, cy: 170 },
+    ],
+    arms: [
+        { id: 'arms_right_shoulder', name: 'Right Shoulder', cx: 60, cy: 70 }, { id: 'arms_left_shoulder', name: 'Left Shoulder', cx: 240, cy: 70 },
+        { id: 'arms_right_bicep', name: 'Right Bicep', cx: 75, cy: 150 }, { id: 'arms_left_bicep', name: 'Left Bicep', cx: 225, cy: 150 },
+        { id: 'arms_right_elbow', name: 'Right Elbow', cx: 50, cy: 210 }, { id: 'arms_left_elbow', name: 'Left Elbow', cx: 250, cy: 210 },
+        { id: 'arms_right_forearm', name: 'Right Forearm', cx: 80, cy: 270 }, { id: 'arms_left_forearm', name: 'Left Forearm', cx: 220, cy: 270 },
+        { id: 'arms_right_hand', name: 'Right Hand/Wrist', cx: 65, cy: 340 }, { id: 'arms_left_hand', name: 'Left Hand/Wrist', cx: 235, cy: 340 },
+    ],
+    legs: [
+        { id: 'legs_right_hip', name: 'Right Hip/Groin', cx: 180, cy: 50 }, { id: 'legs_left_hip', name: 'Left Hip/Groin', cx: 120, cy: 50 },
+        { id: 'legs_right_thigh', name: 'Right Thigh', cx: 190, cy: 130 }, { id: 'legs_left_thigh', name: 'Left Thigh', cx: 110, cy: 130 },
+        { id: 'legs_right_knee', name: 'Right Knee', cx: 185, cy: 220 }, { id: 'legs_left_knee', name: 'Left Knee', cx: 115, cy: 220 },
+        { id: 'legs_right_calf', name: 'Right Calf', cx: 195, cy: 300 }, { id: 'legs_left_calf', name: 'Left Calf', cx: 105, cy: 300 },
+        { id: 'legs_right_ankle', name: 'Right Ankle', cx: 180, cy: 360 }, { id: 'legs_left_ankle', name: 'Left Ankle', cx: 120, cy: 360 },
+    ],
 };
 
 const allMoleSpots = Object.values(moleSpots).flat();
@@ -59,10 +59,10 @@ const getMoleNameById = (id: string) => allMoleSpots.find(spot => spot.id === id
 const inspirations = SAMPLE_ANALYSES[FeatureId.MOLEOLOGY].inspirations;
 
 interface MoleologyProps {
-  onSuggestTattoo: (details: { prompt: string; placement: string; aspectRatio: string; }) => void;
-  onSuggestArt: (details: { prompt: string; aspectRatio: string; }) => void;
-  userGender: UserGender | null;
-  userContext: UserContext | null;
+    onSuggestTattoo: (details: { prompt: string; placement: string; aspectRatio: string; }) => void;
+    onSuggestArt: (details: { prompt: string; aspectRatio: string; }) => void;
+    userGender: UserGender | null;
+    userContext: UserContext | null;
 }
 
 const Moleology: React.FC<MoleologyProps> = ({ onSuggestTattoo, onSuggestArt, userGender, userContext }) => {
@@ -74,7 +74,7 @@ const Moleology: React.FC<MoleologyProps> = ({ onSuggestTattoo, onSuggestArt, us
     const [error, setError] = useState<string>('');
     const [currentView, setCurrentView] = useState<View>('full');
     const [isExample, setIsExample] = useState(false);
-    
+
     useEffect(() => {
         if (userGender) {
             setGender(userGender === 'Female' ? 'Female' : 'Male');
@@ -113,8 +113,8 @@ const Moleology: React.FC<MoleologyProps> = ({ onSuggestTattoo, onSuggestArt, us
 
         const moleNames = selectedMoles.map(getMoleNameById).join(', ');
         const result = await getMoleologyAnalysis(gender, moleNames, selectedPredictions, userContext);
-        
-        if(result) {
+
+        if (result) {
             setAnalysis(result);
         } else {
             setError("The cosmic energies are unclear. Could not generate an analysis. Please try again.");
@@ -122,14 +122,14 @@ const Moleology: React.FC<MoleologyProps> = ({ onSuggestTattoo, onSuggestArt, us
 
         setIsLoading(false);
     }, [gender, selectedMoles, selectedPredictions, userContext]);
-    
+
     const handlePrint = () => { window.print(); };
 
     const handleShare = () => {
         if (analysis) {
             const summary = analysis.sections
-              .map(s => s.title)
-              .join(' | ') || 'A fascinating insight into my destiny.';
+                .map(s => s.title)
+                .join(' | ') || 'A fascinating insight into my destiny.';
             const textToCopy = `I just got my AI Moleology Reading from Taintra! Key insights include: "${summary}"`;
             navigator.clipboard.writeText(textToCopy)
                 .then(() => alert('Report summary copied to clipboard!'))
@@ -148,7 +148,7 @@ const Moleology: React.FC<MoleologyProps> = ({ onSuggestTattoo, onSuggestArt, us
         setIsLoading(false);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
-    
+
     const getAnalysisTextForSuggestion = () => {
         if (!analysis) return "";
         return analysis.sections.map(s => `${s.title}: ${s.description}`).join('\n\n');
@@ -157,9 +157,9 @@ const Moleology: React.FC<MoleologyProps> = ({ onSuggestTattoo, onSuggestArt, us
     const AnalysisAccordionItem: React.FC<{ section: MoleologyAnalysisSection; defaultOpen?: boolean; index: number; }> = ({ section, defaultOpen = false, index }) => {
         const [isOpen, setIsOpen] = useState(defaultOpen);
         const contentRef = useRef<HTMLDivElement>(null);
-        
+
         const icons: { [key: string]: string } = {
-            personality: '👤', love: '❤️', health: '🌿', 
+            personality: '👤', love: '❤️', health: '🌿',
             wealth: '💰', career: '🚀', spirituality: '✨'
         };
 
@@ -174,7 +174,7 @@ const Moleology: React.FC<MoleologyProps> = ({ onSuggestTattoo, onSuggestArt, us
                         <span className="text-xl">{icons[section.category] || '✧'}</span>
                         <h4 className={`font-bold text-lg text-yellow-300`}>{section.title}</h4>
                     </div>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24" strokeWidth={2.5} stroke="currentColor" className={`w-5 h-5 text-gray-400 transform transition-transform duration-300 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`}><path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className={`w-5 h-5 text-gray-400 transform transition-transform duration-300 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`}><path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>
                 </button>
                 <div
                     ref={contentRef}
@@ -220,8 +220,8 @@ const Moleology: React.FC<MoleologyProps> = ({ onSuggestTattoo, onSuggestArt, us
                 <g>
                     {spots.map(spot => (
                         <g key={spot.id} onClick={() => toggleMole(spot.id)} className="mole-spot cursor-pointer">
-                           <circle cx={spot.cx} cy={spot.cy} r="10" fill="transparent" />
-                           <circle
+                            <circle cx={spot.cx} cy={spot.cy} r="10" fill="transparent" />
+                            <circle
                                 cx={spot.cx}
                                 cy={spot.cy}
                                 r="5"
@@ -253,7 +253,7 @@ const Moleology: React.FC<MoleologyProps> = ({ onSuggestTattoo, onSuggestArt, us
                                     {predictionTypes.map(({ id, label }) => (
                                         <label key={id} className="flex items-center space-x-3 cursor-pointer group">
                                             <input type="checkbox" checked={selectedPredictions.includes(id)} onChange={() => togglePrediction(id)}
-                                                className="h-5 w-5 rounded bg-gray-700 border-gray-600 text-yellow-500 focus:ring-yellow-500 focus:ring-offset-gray-900"/>
+                                                className="h-5 w-5 rounded bg-gray-700 border-gray-600 text-yellow-500 focus:ring-yellow-500 focus:ring-offset-gray-900" />
                                             <span className="text-gray-300 group-hover:text-white transition-colors">{label}</span>
                                         </label>
                                     ))}
@@ -271,7 +271,7 @@ const Moleology: React.FC<MoleologyProps> = ({ onSuggestTattoo, onSuggestArt, us
                                                     </li>
                                                 ))}
                                             </ul>
-                                        ) : ( <p className="text-gray-500 text-sm text-center pt-4">No moles selected yet.</p> )}
+                                        ) : (<p className="text-gray-500 text-sm text-center pt-4">No moles selected yet.</p>)}
                                     </div>
                                 </div>
                             </div>
@@ -290,7 +290,7 @@ const Moleology: React.FC<MoleologyProps> = ({ onSuggestTattoo, onSuggestArt, us
                                 <div className="relative w-full flex-grow min-h-[400px] bg-gray-800/30 rounded-lg p-2 flex items-center justify-center">
                                     {currentView !== 'full' && (
                                         <button onClick={() => setCurrentView('full')} className="absolute top-2 left-2 z-10 text-yellow-400 hover:text-yellow-300 transition-colors bg-black/30 rounded-full p-2" aria-label="Back to Full View">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" /></svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" /></svg>
                                         </button>
                                     )}
                                     <BodyMap />
@@ -342,10 +342,10 @@ const Moleology: React.FC<MoleologyProps> = ({ onSuggestTattoo, onSuggestArt, us
                                 <AnalysisAccordionItem key={section.category} section={section} defaultOpen={index === 0} index={index} />
                             ))}
                         </div>
-                        
+
                         <div className="mt-8 animate-[fadeIn_1s_ease-in-out] print-hidden">
                             <div className="grid md:grid-cols-3 gap-4">
-                                <TattooSuggestion 
+                                <TattooSuggestion
                                     analysisText={getAnalysisTextForSuggestion()}
                                     onGenerateTattoo={onSuggestTattoo}
                                     featureName="Moleology"

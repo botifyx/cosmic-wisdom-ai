@@ -12,7 +12,7 @@ const Tour: React.FC<TourProps> = ({ onFeatureSelect }) => {
   const handleAccordionClick = (featureId: FeatureId) => {
     setOpenAccordion(openAccordion === featureId ? null : featureId);
   };
-  
+
   // Filter out non-tool features for this list
   const tools = features.filter(f => ![FeatureId.HOME, FeatureId.TOUR, FeatureId.PACKAGES].includes(f.id));
 
@@ -75,12 +75,11 @@ const Tour: React.FC<TourProps> = ({ onFeatureSelect }) => {
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
-                    viewBox="0 0 24"
+                    viewBox="0 0 24 24"
                     strokeWidth={2.5}
                     stroke="currentColor"
-                    className={`w-6 h-6 text-yellow-400 transform transition-transform duration-300 ${
-                      isOpen ? 'rotate-180' : ''
-                    }`}
+                    className={`w-6 h-6 text-yellow-400 transform transition-transform duration-300 ${isOpen ? 'rotate-180' : ''
+                      }`}
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                   </svg>
@@ -91,13 +90,13 @@ const Tour: React.FC<TourProps> = ({ onFeatureSelect }) => {
                 >
                   <div>
                     <div className="p-4 md:p-6 pt-2 border-t border-gray-700/30 flex flex-col md:flex-row gap-6 items-center">
-                        <p className="text-gray-400 flex-grow">{tool.description}</p>
-                        <button
-                            onClick={() => onFeatureSelect(tool.id)}
-                            className="bg-yellow-500 text-gray-900 font-bold py-2 px-6 rounded-full hover:bg-yellow-400 transition-colors flex-shrink-0"
-                        >
-                            Preview
-                        </button>
+                      <p className="text-gray-400 flex-grow">{tool.description}</p>
+                      <button
+                        onClick={() => onFeatureSelect(tool.id)}
+                        className="bg-yellow-500 text-gray-900 font-bold py-2 px-6 rounded-full hover:bg-yellow-400 transition-colors flex-shrink-0"
+                      >
+                        Preview
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -108,25 +107,25 @@ const Tour: React.FC<TourProps> = ({ onFeatureSelect }) => {
       </section>
 
       {/* The Taintra Difference Section */}
-       <section>
+      <section>
         <h2 className="text-3xl font-playfair font-bold text-center text-yellow-400 mb-8">The Taintra Difference</h2>
         <div className="grid md:grid-cols-2 gap-6">
-            <div className="p-6 bg-gray-900/30 rounded-xl">
-                <h3 className="text-xl font-playfair font-semibold text-white mb-2">Structured, In-Depth Analysis</h3>
-                <p className="text-gray-400">Unlike simple paragraph generators, our AI provides structured, detailed reports with clear sections, making the wisdom easy to understand and revisit.</p>
-            </div>
-            <div className="p-6 bg-gray-900/30 rounded-xl">
-                <h3 className="text-xl font-playfair font-semibold text-white mb-2">Personalized Cosmic Art</h3>
-                <p className="text-gray-400">After receiving an analysis, you can transform its essence into a unique piece of AI-generated art—a personal sigil for your phone or desktop.</p>
-            </div>
-            <div className="p-6 bg-gray-900/30 rounded-xl">
-                <h3 className="text-xl font-playfair font-semibold text-white mb-2">Interactive Experience</h3>
-                <p className="text-gray-400">From interactive star charts and body maps for moleology to a virtual Tarot deck, our tools are designed to be engaging and intuitive.</p>
-            </div>
-            <div className="p-6 bg-gray-900/30 rounded-xl">
-                <h3 className="text-xl font-playfair font-semibold text-white mb-2">Context-Aware AI Guru</h3>
-                <p className="text-gray-400">Our chatbot, Gufy, understands which tool you're using and provides relevant, context-aware guidance to enhance your discovery.</p>
-            </div>
+          <div className="p-6 bg-gray-900/30 rounded-xl">
+            <h3 className="text-xl font-playfair font-semibold text-white mb-2">Structured, In-Depth Analysis</h3>
+            <p className="text-gray-400">Unlike simple paragraph generators, our AI provides structured, detailed reports with clear sections, making the wisdom easy to understand and revisit.</p>
+          </div>
+          <div className="p-6 bg-gray-900/30 rounded-xl">
+            <h3 className="text-xl font-playfair font-semibold text-white mb-2">Personalized Cosmic Art</h3>
+            <p className="text-gray-400">After receiving an analysis, you can transform its essence into a unique piece of AI-generated art—a personal sigil for your phone or desktop.</p>
+          </div>
+          <div className="p-6 bg-gray-900/30 rounded-xl">
+            <h3 className="text-xl font-playfair font-semibold text-white mb-2">Interactive Experience</h3>
+            <p className="text-gray-400">From interactive star charts and body maps for moleology to a virtual Tarot deck, our tools are designed to be engaging and intuitive.</p>
+          </div>
+          <div className="p-6 bg-gray-900/30 rounded-xl">
+            <h3 className="text-xl font-playfair font-semibold text-white mb-2">Context-Aware AI Guru</h3>
+            <p className="text-gray-400">Our chatbot, Gufy, understands which tool you're using and provides relevant, context-aware guidance to enhance your discovery.</p>
+          </div>
         </div>
       </section>
 

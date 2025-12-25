@@ -28,7 +28,7 @@ import { features } from './features';
 import { getUserContextInfo } from './services/deviceInfoService';
 import { generateComprehensiveReport } from './services/geminiService';
 import { auth, db } from './services/firebase';
-import { getSubscription } from './services/subscription';
+import { getSubscription, checkFeatureAccess } from './services/subscription';
 import { UserSubscription } from './types';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import Modal, { ModalType } from './components/ui/Modal';
@@ -49,40 +49,41 @@ const App: React.FC = () => {
   const [authPackage, setAuthPackage] = useState<Package | null>(null);
   const [trialPackage, setTrialPackage] = useState<Package | null>(null);
   const [userContext, setUserContext] = useState<UserContext | null>(null);
+  const [userSubscription, setUserSubscription] = useState<UserSubscription | null>(null);
 
   // New State for Full Package Flow
   const [showPackageWizard, setShowPackageWizard] = useState(false);
   const [activePackage, setActivePackage] = useState<Package | null>(null);
   const [fullReportData, setFullReportData] = useState<CombinedAnalysisReport | null>(null);
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
-  
+
   // Generic Modal State
   const [modalState, setModalState] = useState<{
-      isOpen: boolean;
-      type: ModalType;
-      title: string;
-      message: string;
-      onAction?: () => void;
+    isOpen: boolean;
+    type: ModalType;
+    title: string;
+    message: string;
+    onAction?: () => void;
   }>({
-      isOpen: false,
-      type: 'info',
-      title: '',
-      message: ''
+    isOpen: false,
+    type: 'info',
+    title: '',
+    message: ''
   });
 
   const openModal = (type: ModalType, title: string, message: string, onAction?: () => void) => {
-      setModalState({ isOpen: true, type, title, message, onAction });
+    setModalState({ isOpen: true, type, title, message, onAction });
   };
 
   const closeModal = () => {
-      setModalState(prev => ({ ...prev, isOpen: false }));
+    setModalState(prev => ({ ...prev, isOpen: false }));
   };
 
   // Fetch user context on load
   useEffect(() => {
     const fetchUserContext = async () => {
-        const info = await getUserContextInfo();
-        setUserContext(info);
+      const info = await getUserContextInfo();
+      setUserContext(info);
     };
     fetchUserContext();
   }, []);
@@ -90,50 +91,52 @@ const App: React.FC = () => {
   // Check for session on initial load
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-        if (user) {
-            // User is signed in.
-            const email = user.email || '';
-            const name = user.displayName || email.split('@')[0];
-            
-            // Try to recover extended state from local storage mock DB
-            // In a real app, this would be a Firestore fetch
-            const users = JSON.parse(localStorage.getItem('taintra-users') || '{}');
-            const storedUser = users[email];
+      if (user) {
+        // User is signed in.
+        const email = user.email || '';
+        const name = user.displayName || email.split('@')[0];
 
-            // Fetch subscription from Firestore
-            getSubscription(user.uid).then((sub) => {
-                let derivedState: UserState = 'guest'; // default
-                if (sub && sub.status === 'active') {
-                    derivedState = 'full_access';
-                } else {
-                    // Fallback to local storage or trial logic
-                    derivedState = storedUser?.state || 'trial';
-                }
-                
-                setUserState(derivedState);
-                setUserName(name);
-                setUserEmail(email);
-                setUserGender(storedUser?.gender || 'Unisex');
-                
-                // Update local session
-                localStorage.setItem('taintra-session', JSON.stringify({ 
-                    name, 
-                    email, 
-                    state: derivedState, 
-                    gender: storedUser?.gender || 'Unisex' 
-                }));
-            });
+        // Try to recover extended state from local storage mock DB
+        // In a real app, this would be a Firestore fetch
+        const users = JSON.parse(localStorage.getItem('taintra-users') || '{}');
+        const storedUser = users[email];
 
-        } else {
-            // User is signed out.
-            setUserState('guest');
-            setUserName('');
-            setUserEmail('');
-            setUserGender(null);
-            setTrialPackage(null);
-            setFullReportData(null);
-            localStorage.removeItem('taintra-session');
-        }
+        // Fetch subscription from Firestore
+        getSubscription(user.uid).then((sub) => {
+          let derivedState: UserState = 'guest'; // default
+          if (sub && sub.status === 'active') {
+            derivedState = 'full_access';
+          } else {
+            // Fallback to local storage or trial logic
+            derivedState = storedUser?.state || 'trial';
+          }
+
+          setUserState(derivedState);
+          setUserName(name);
+          setUserEmail(email);
+          setUserGender(storedUser?.gender || 'Unisex');
+          setUserSubscription(sub);
+
+          // Update local session
+          localStorage.setItem('taintra-session', JSON.stringify({
+            name,
+            email,
+            state: derivedState,
+            gender: storedUser?.gender || 'Unisex'
+          }));
+        });
+
+      } else {
+        // User is signed out.
+        setUserState('guest');
+        setUserName('');
+        setUserEmail('');
+        setUserGender(null);
+        setTrialPackage(null);
+        setFullReportData(null);
+        setUserSubscription(null);
+        localStorage.removeItem('taintra-session');
+      }
     });
 
     return () => unsubscribe();
@@ -144,7 +147,7 @@ const App: React.FC = () => {
     setActiveFeature(FeatureId.TATTOO_MAKER);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
-  
+
   const handleTattooGenerationComplete = useCallback(() => {
     setTattooGenerationDetails(null);
   }, []);
@@ -154,7 +157,7 @@ const App: React.FC = () => {
     setActiveFeature(FeatureId.COSMIC_ART_GENERATOR);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
-  
+
   const handleArtGenerationComplete = useCallback(() => {
     setArtGenerationDetails(null);
   }, []);
@@ -164,7 +167,7 @@ const App: React.FC = () => {
     setShowAuthModal(true);
     setAuthPackage(pkg || (view === 'register' ? packages[0] : null));
   };
-  
+
   const handleSelectPackage = (pkg: Package) => {
     if (userState === 'guest') {
       handleAuthModalOpen('register', pkg);
@@ -178,15 +181,15 @@ const App: React.FC = () => {
   };
 
   const handlePackageInputComplete = async (inputs: PackageInputs) => {
-      if (!activePackage) return;
-      setShowPackageWizard(false);
-      setIsGeneratingReport(true);
-      
-      // Call the synthesis service
-      const report = await generateComprehensiveReport(inputs, activePackage.features, userContext);
-      
-      setFullReportData(report);
-      setIsGeneratingReport(false);
+    if (!activePackage) return;
+    setShowPackageWizard(false);
+    setIsGeneratingReport(true);
+
+    // Call the synthesis service
+    const report = await generateComprehensiveReport(inputs, activePackage.features, userContext);
+
+    setFullReportData(report);
+    setIsGeneratingReport(false);
   };
 
   const handleRegisterSuccess = (name: string, email: string, gender: Gender) => {
@@ -209,93 +212,106 @@ const App: React.FC = () => {
     setUserGender(user.gender);
     setShowAuthModal(false);
     localStorage.setItem('taintra-session', JSON.stringify(user));
-    setActiveFeature(FeatureId.PACKAGES); 
+    setActiveFeature(FeatureId.PACKAGES);
   };
-  
+
   const handleLogout = () => {
     signOut(auth).then(() => {
-        // State clearing is handled by onAuthStateChanged, but we can do extra cleanup if needed
-        setActiveFeature(FeatureId.HOME);
+      // State clearing is handled by onAuthStateChanged, but we can do extra cleanup if needed
+      setActiveFeature(FeatureId.HOME);
     }).catch((error) => {
-        console.error("Logout error", error);
+      console.error("Logout error", error);
     });
   };
-  
+
   const handlePurchase = () => {
     const updatedState: UserState = 'full_access';
     setUserState(updatedState);
-    
+
     // Update master user list
     const users = JSON.parse(localStorage.getItem('taintra-users') || '{}');
     if (users[userEmail]) {
-        users[userEmail].state = updatedState;
-        localStorage.setItem('taintra-users', JSON.stringify(users));
+      users[userEmail].state = updatedState;
+      localStorage.setItem('taintra-users', JSON.stringify(users));
     }
 
     // Update session
     localStorage.setItem('taintra-session', JSON.stringify({ name: userName, email: userEmail, state: updatedState, gender: userGender }));
-    
+
     localStorage.setItem('taintra-session', JSON.stringify({ name: userName, email: userEmail, state: updatedState, gender: userGender }));
-    
+
     openModal('success', 'Purchase Successful', "You've unlocked your full cosmic report. The stars are aligned for you!");
-    
+
     // Transition from Trial Report to Package Wizard immediately if a package was selected
     if (trialPackage) {
-        const pkg = trialPackage; // capture ref
-        setTrialPackage(null);
-        setActivePackage(pkg);
-        setShowPackageWizard(true);
+      const pkg = trialPackage; // capture ref
+      setTrialPackage(null);
+      setActivePackage(pkg);
+      setShowPackageWizard(true);
     }
   };
 
   const handleNavClick = (featureId: FeatureId) => {
     if (activeFeature === FeatureId.TATTOO_MAKER && featureId !== FeatureId.TATTOO_MAKER) {
-        setTattooGenerationDetails(null);
+      setTattooGenerationDetails(null);
     }
     if (activeFeature === FeatureId.COSMIC_ART_GENERATOR && featureId !== FeatureId.COSMIC_ART_GENERATOR) {
-        setArtGenerationDetails(null);
+      setArtGenerationDetails(null);
     }
-    
+
     // Reset reports if navigating
     if (trialPackage) setTrialPackage(null);
     if (fullReportData) setFullReportData(null);
-    
+
     const directNavFeatures = [FeatureId.HOME, FeatureId.PACKAGES, FeatureId.TOUR];
     if (userState === 'guest' && !directNavFeatures.includes(featureId)) {
-        setPreviewFeatureId(featureId);
+      setPreviewFeatureId(featureId);
     } else {
-        setActiveFeature(featureId);
-        setPreviewFeatureId(null);
+      // Feature Gating Check for Logged-in Users (User state is not guest)
+      if (!directNavFeatures.includes(featureId)) {
+        const hasAccess = checkFeatureAccess(userSubscription, featureId);
+        if (!hasAccess) {
+          openModal(
+            'info',
+            'Upgrade Required',
+            'This feature is part of a premium package. Please upgrade your plan to access it.',
+            () => setActiveFeature(FeatureId.PACKAGES)
+          );
+          return;
+        }
+      }
+      setActiveFeature(featureId);
+      setPreviewFeatureId(null);
     }
   };
 
   const renderContent = () => {
     // 1. Generating State
     if (isGeneratingReport) {
-        return (
-            <div className="flex flex-col items-center justify-center min-h-[60vh] animate-[fadeIn_0.5s]">
-                <div className="w-24 h-24 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin mb-8"></div>
-                <h2 className="text-3xl font-playfair text-white text-center mb-2">Synthesizing Cosmic Wisdom</h2>
-                <p className="text-gray-400 text-center max-w-md">Connecting your astrological chart, palm lines, and sacred data into one unified prophecy...</p>
-            </div>
-        );
+      return (
+        <div className="flex flex-col items-center justify-center min-h-[60vh] animate-[fadeIn_0.5s]">
+          <div className="w-24 h-24 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin mb-8"></div>
+          <h2 className="text-3xl font-playfair text-white text-center mb-2">Synthesizing Cosmic Wisdom</h2>
+          <p className="text-gray-400 text-center max-w-md">Connecting your astrological chart, palm lines, and sacred data into one unified prophecy...</p>
+        </div>
+      );
     }
 
     // 2. Full Report State
     if (fullReportData && activePackage) {
-        return <FullReport report={fullReportData} pkg={activePackage} onClose={() => setFullReportData(null)} />;
+      return <FullReport report={fullReportData} pkg={activePackage} onClose={() => setFullReportData(null)} />;
     }
 
     // 3. Trial Report State
     if ((userState === 'trial') && trialPackage) {
-        return <TrialReport pkg={trialPackage} onPurchase={handlePurchase} userName={userName} userGender={userGender} userContext={userContext} userState={userState} onNavClick={handleNavClick} />;
+      return <TrialReport pkg={trialPackage} onPurchase={handlePurchase} userName={userName} userGender={userGender} userContext={userContext} userState={userState} onNavClick={handleNavClick} />;
     }
-    
+
     // 4. Standard Features
     switch (activeFeature) {
       case FeatureId.HOME: return <HeroSection onFeatureSelect={handleNavClick} />;
       case FeatureId.TOUR: return <Tour onFeatureSelect={handleNavClick} />;
-      case FeatureId.PACKAGES: return <Packages onSelectPackage={handleSelectPackage} userState={userState} userCountry={userContext?.geolocation?.country} />;
+      case FeatureId.PACKAGES: return <Packages onSelectPackage={handleSelectPackage} userState={userState} userCountry={userContext?.geolocation?.country} userSubscription={userSubscription} />;
       case FeatureId.PALMISTRY: return <PalmReading onSuggestTattoo={handleSuggestTattoo} onSuggestArt={handleSuggestArt} userGender={userGender} userContext={userContext} />;
       case FeatureId.FACE_READING: return <FaceReading onSuggestTattoo={handleSuggestTattoo} onSuggestArt={handleSuggestArt} userGender={userGender} userContext={userContext} />;
       case FeatureId.HANDWRITING_ANALYSIS: return <HandwritingAnalysis onSuggestTattoo={handleSuggestTattoo} onSuggestArt={handleSuggestArt} userGender={userGender} userContext={userContext} />;
@@ -311,7 +327,7 @@ const App: React.FC = () => {
       default: return <HeroSection onFeatureSelect={handleNavClick} />;
     }
   };
-  
+
   const previewedFeature = features.find(f => f.id === previewFeatureId);
 
   return (
@@ -320,7 +336,7 @@ const App: React.FC = () => {
       <main className="flex-grow container mx-auto px-4 py-8 md:py-12">
         {activeFeature !== FeatureId.HOME && !trialPackage && !fullReportData && !isGeneratingReport && (
           <button onClick={() => handleNavClick(FeatureId.HOME)} className="mb-8 flex items-center gap-2 text-yellow-400 hover:text-yellow-300 transition-colors print-hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" /></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" /></svg>
             Back to Home
           </button>
         )}
@@ -332,22 +348,22 @@ const App: React.FC = () => {
       {previewedFeature && (
         <FeaturePreview feature={previewedFeature} onClose={() => setPreviewFeatureId(null)} onSelectPackage={() => { setPreviewFeatureId(null); handleAuthModalOpen('register'); }} />
       )}
-      
+
       {showAuthModal && (
-          <Auth initialView={authView} selectedPackage={authPackage} onClose={() => setShowAuthModal(false)} onRegisterSuccess={handleRegisterSuccess} onLoginSuccess={handleLoginSuccess} />
+        <Auth initialView={authView} selectedPackage={authPackage} onClose={() => setShowAuthModal(false)} onRegisterSuccess={handleRegisterSuccess} onLoginSuccess={handleLoginSuccess} />
       )}
 
       {showPackageWizard && activePackage && (
-          <PackageWizard 
-            pkg={activePackage} 
-            userGender={userGender} 
-            userName={userName} 
-            onComplete={handlePackageInputComplete} 
-            onCancel={() => setShowPackageWizard(false)} 
-          />
+        <PackageWizard
+          pkg={activePackage}
+          userGender={userGender}
+          userName={userName}
+          onComplete={handlePackageInputComplete}
+          onCancel={() => setShowPackageWizard(false)}
+        />
       )}
 
-      <Modal 
+      <Modal
         isOpen={modalState.isOpen}
         onClose={closeModal}
         type={modalState.type}

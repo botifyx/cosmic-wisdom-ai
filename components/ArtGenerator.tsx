@@ -17,7 +17,7 @@ const exampleCreations = [
     prompt: 'A mystical Banyan tree with roots in the earth and branches in the starry cosmos, digital art.',
     aspectRatio: '1:1',
   },
-   {
+  {
     prompt: 'The goddess Lakshmi rising from a cosmic lotus, showering golden light, in the style of Ravi Varma.',
     aspectRatio: '3:4',
   },
@@ -28,9 +28,9 @@ const exampleCreations = [
 ];
 
 interface ArtGeneratorProps {
-    initialPrompt?: string;
-    initialAspectRatio?: string;
-    onGenerationComplete?: () => void;
+  initialPrompt?: string;
+  initialAspectRatio?: string;
+  onGenerationComplete?: () => void;
 }
 
 const ArtGenerator: React.FC<ArtGeneratorProps> = ({ initialPrompt, initialAspectRatio, onGenerationComplete }) => {
@@ -53,12 +53,12 @@ const ArtGenerator: React.FC<ArtGeneratorProps> = ({ initialPrompt, initialAspec
   };
 
   const scrollGallery = (direction: 'left' | 'right') => {
-      if (!galleryRef.current) return;
-      const scrollAmount = galleryRef.current.clientWidth * 0.8;
-      galleryRef.current.scrollBy({
-          left: direction === 'left' ? -scrollAmount : scrollAmount,
-          behavior: 'smooth'
-      });
+    if (!galleryRef.current) return;
+    const scrollAmount = galleryRef.current.clientWidth * 0.8;
+    galleryRef.current.scrollBy({
+      left: direction === 'left' ? -scrollAmount : scrollAmount,
+      behavior: 'smooth'
+    });
   };
 
   useEffect(() => {
@@ -78,11 +78,11 @@ const ArtGenerator: React.FC<ArtGeneratorProps> = ({ initialPrompt, initialAspec
 
   useEffect(() => {
     if (initialPrompt && !initialPromptHandled.current) {
-        setPrompt(initialPrompt);
-        if (initialAspectRatio) {
-            setAspectRatio(initialAspectRatio);
-        }
-        initialPromptHandled.current = true; // Mark as handled
+      setPrompt(initialPrompt);
+      if (initialAspectRatio) {
+        setAspectRatio(initialAspectRatio);
+      }
+      initialPromptHandled.current = true; // Mark as handled
     }
   }, [initialPrompt, initialAspectRatio]);
 
@@ -94,21 +94,21 @@ const ArtGenerator: React.FC<ArtGeneratorProps> = ({ initialPrompt, initialAspec
     setIsLoading(true);
     setError('');
     setGeneratedImage(null);
-    
+
     const result = await generateImage(prompt, aspectRatio, 'art', selectedStyle);
-    
+
     if (result) {
       setGeneratedImage(result);
     } else {
       setError('Failed to generate art. The cosmos might be busy, please try again.');
     }
-    
+
     setIsLoading(false);
     if (initialPrompt) {
-        onGenerationComplete?.();
+      onGenerationComplete?.();
     }
   }, [prompt, aspectRatio, initialPrompt, onGenerationComplete, selectedStyle]);
-  
+
   return (
     <div className="max-w-4xl mx-auto p-6 bg-gray-900/50 backdrop-blur-md rounded-2xl border border-gray-700/50">
       <div className="text-center mb-8">
@@ -131,18 +131,18 @@ const ArtGenerator: React.FC<ArtGeneratorProps> = ({ initialPrompt, initialAspec
           />
         </div>
         <div>
-            <label className="block text-lg font-medium text-yellow-400 mb-2">Artistic Style</label>
-            <div className="flex flex-wrap gap-2">
-                {artStyles.map((style) => (
-                    <button 
-                        key={style} 
-                        onClick={() => setSelectedStyle(style)} 
-                        className={`px-4 py-2 text-xs sm:text-sm rounded-full border-2 transition-all duration-300 ${selectedStyle === style ? 'bg-yellow-500 border-yellow-500 text-gray-900 font-semibold shadow-md shadow-yellow-500/20' : 'bg-gray-800 border-gray-600 hover:border-yellow-400 text-gray-300'}`}
-                    >
-                        {style}
-                    </button>
-                ))}
-            </div>
+          <label className="block text-lg font-medium text-yellow-400 mb-2">Artistic Style</label>
+          <div className="flex flex-wrap gap-2">
+            {artStyles.map((style) => (
+              <button
+                key={style}
+                onClick={() => setSelectedStyle(style)}
+                className={`px-4 py-2 text-xs sm:text-sm rounded-full border-2 transition-all duration-300 ${selectedStyle === style ? 'bg-yellow-500 border-yellow-500 text-gray-900 font-semibold shadow-md shadow-yellow-500/20' : 'bg-gray-800 border-gray-600 hover:border-yellow-400 text-gray-300'}`}
+              >
+                {style}
+              </button>
+            ))}
+          </div>
         </div>
         <div>
           <label htmlFor="aspect-ratio" className="block text-lg font-medium text-yellow-400 mb-2">Aspect Ratio</label>
@@ -151,11 +151,10 @@ const ArtGenerator: React.FC<ArtGeneratorProps> = ({ initialPrompt, initialAspec
               <button
                 key={ratio}
                 onClick={() => setAspectRatio(ratio)}
-                className={`px-4 py-2 rounded-full border-2 transition-colors ${
-                  aspectRatio === ratio 
-                  ? 'bg-yellow-500 border-yellow-500 text-gray-900 font-semibold' 
-                  : 'bg-gray-700 border-gray-600 hover:border-yellow-400'
-                }`}
+                className={`px-4 py-2 rounded-full border-2 transition-colors ${aspectRatio === ratio
+                    ? 'bg-yellow-500 border-yellow-500 text-gray-900 font-semibold'
+                    : 'bg-gray-700 border-gray-600 hover:border-yellow-400'
+                  }`}
               >
                 {ratio}
               </button>
@@ -171,57 +170,57 @@ const ArtGenerator: React.FC<ArtGeneratorProps> = ({ initialPrompt, initialAspec
         </button>
         {error && <p className="text-red-500 text-center">{error}</p>}
       </div>
-      
-       <div className="mt-10">
-          <h3 className="text-lg font-medium text-yellow-400 mb-4 text-center">Inspiration Idea</h3>
-          <div className="relative group/gallery">
-               <button
-                  onClick={() => scrollGallery('left')}
-                  disabled={isAtStart}
-                  aria-label="Scroll left"
-                  className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-black/30 backdrop-blur-sm rounded-full p-2 text-white hover:bg-black/60 transition-all opacity-0 group-hover/gallery:opacity-100 disabled:opacity-0 disabled:cursor-not-allowed -translate-x-4"
-              >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" /></svg>
-              </button>
+
+      <div className="mt-10">
+        <h3 className="text-lg font-medium text-yellow-400 mb-4 text-center">Inspiration Idea</h3>
+        <div className="relative group/gallery">
+          <button
+            onClick={() => scrollGallery('left')}
+            disabled={isAtStart}
+            aria-label="Scroll left"
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-black/30 backdrop-blur-sm rounded-full p-2 text-white hover:bg-black/60 transition-all opacity-0 group-hover/gallery:opacity-100 disabled:opacity-0 disabled:cursor-not-allowed -translate-x-4"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" /></svg>
+          </button>
+          <div
+            ref={galleryRef}
+            className="flex overflow-x-auto space-x-4 p-2 -mx-2 hide-scrollbar"
+            style={{ scrollSnapType: 'x mandatory' }}
+          >
+            {exampleCreations.map((example, index) => (
               <div
-                  ref={galleryRef}
-                  className="flex overflow-x-auto space-x-4 p-2 -mx-2 hide-scrollbar"
-                  style={{ scrollSnapType: 'x mandatory' }}
+                key={index}
+                className="mystic-card p-5 flex flex-col flex-shrink-0 w-64 h-40 group cursor-pointer"
+                style={{ scrollSnapAlign: 'start' }}
+                onClick={() => {
+                  setPrompt(example.prompt);
+                  setAspectRatio(example.aspectRatio);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                title="Click to use this prompt"
               >
-                  {exampleCreations.map((example, index) => (
-                      <div
-                          key={index}
-                          className="mystic-card p-5 flex flex-col flex-shrink-0 w-64 h-40 group cursor-pointer"
-                          style={{ scrollSnapAlign: 'start' }}
-                          onClick={() => {
-                              setPrompt(example.prompt);
-                              setAspectRatio(example.aspectRatio);
-                              window.scrollTo({ top: 0, behavior: 'smooth' });
-                          }}
-                          title="Click to use this prompt"
-                      >
-                           <div className="flex-grow overflow-hidden">
-                                <p className="text-gray-300 text-sm leading-relaxed overflow-hidden" style={{ display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical' }}>
-                                    {example.prompt}
-                                </p>
-                            </div>
-                            <div className="flex-shrink-0 flex justify-end items-center pt-2">
-                                <span className="bg-black/50 text-yellow-400 text-xs font-mono font-semibold py-1 px-3 rounded-full border border-yellow-500/30 backdrop-blur-sm">
-                                    {example.aspectRatio}
-                                </span>
-                            </div>
-                      </div>
-                  ))}
+                <div className="flex-grow overflow-hidden">
+                  <p className="text-gray-300 text-sm leading-relaxed overflow-hidden" style={{ display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical' }}>
+                    {example.prompt}
+                  </p>
+                </div>
+                <div className="flex-shrink-0 flex justify-end items-center pt-2">
+                  <span className="bg-black/50 text-yellow-400 text-xs font-mono font-semibold py-1 px-3 rounded-full border border-yellow-500/30 backdrop-blur-sm">
+                    {example.aspectRatio}
+                  </span>
+                </div>
               </div>
-              <button
-                  onClick={() => scrollGallery('right')}
-                  disabled={isAtEnd}
-                  aria-label="Scroll right"
-                  className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-black/30 backdrop-blur-sm rounded-full p-2 text-white hover:bg-black/60 transition-all opacity-0 group-hover/gallery:opacity-100 disabled:opacity-0 disabled:cursor-not-allowed translate-x-4"
-              >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
-              </button>
+            ))}
           </div>
+          <button
+            onClick={() => scrollGallery('right')}
+            disabled={isAtEnd}
+            aria-label="Scroll right"
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-black/30 backdrop-blur-sm rounded-full p-2 text-white hover:bg-black/60 transition-all opacity-0 group-hover/gallery:opacity-100 disabled:opacity-0 disabled:cursor-not-allowed translate-x-4"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
+          </button>
+        </div>
       </div>
 
 
@@ -234,7 +233,7 @@ const ArtGenerator: React.FC<ArtGeneratorProps> = ({ initialPrompt, initialAspec
         )}
         {generatedImage && (
           <div className="bg-gray-800/50 p-2 rounded-lg">
-              <img src={generatedImage} alt="Generated cosmic art" className="w-full h-auto rounded-md" />
+            <img src={generatedImage} alt="Generated cosmic art" className="w-full h-auto rounded-md" />
           </div>
         )}
       </div>
