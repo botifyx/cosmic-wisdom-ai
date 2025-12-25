@@ -41,15 +41,7 @@ const Header: React.FC<HeaderProps> = ({ onNavClick, onStartTrial, onLogin, user
           onClick={() => onNavClick(FeatureId.HOME)}
         >
           <div className="w-10 h-10 relative">
-            {/* AI Core */}
-            <div className="absolute inset-2 rounded-full bg-yellow-400/80" style={{ animation: 'pulse-logo-glow 3s infinite ease-in-out' }}></div>
-            {/* Orbits */}
-            <svg viewBox="0 0 100 100" className="w-full h-full animate-spin" style={{ animationDuration: '10s' }}>
-              <circle cx="50" cy="50" r="45" stroke="rgba(253, 224, 71, 0.5)" strokeWidth="4" fill="none" />
-            </svg>
-            <svg viewBox="0 0 100 100" className="w-full h-full absolute top-0 left-0 animate-spin" style={{ animationDuration: '15s', animationDirection: 'reverse' }}>
-              <ellipse cx="50" cy="50" rx="30" ry="48" stroke="rgba(253, 224, 71, 0.3)" strokeWidth="3" fill="none" transform="rotate(45 50 50)" />
-            </svg>
+            <img src="/logo.png" alt="Taintra Logo" className="w-full h-full object-contain" style={{ animation: 'pulse-logo-glow 3s infinite ease-in-out' }} />
           </div>
           <span 
             className="text-3xl font-bold font-playfair logo-text-gradient"

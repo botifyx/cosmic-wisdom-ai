@@ -40,17 +40,8 @@ const Footer: React.FC<FooterProps> = ({ onNavClick }) => {
           <div 
             className="relative w-24 h-24 mb-6" 
             style={{ animation: 'pulse-footer-glow 5s infinite ease-in-out' }}
-            aria-label="Sacred Geometry"
           >
-            <svg viewBox="0 0 100 100" className="w-full h-full text-purple-300">
-              <circle cx="50" cy="50" r="23.5" stroke="currentColor" strokeWidth="1" fill="none" />
-              <circle cx="50" cy="26.5" r="23.5" stroke="currentColor" strokeWidth="1" fill="none" />
-              <circle cx="70.35" cy="38.25" r="23.5" stroke="currentColor" strokeWidth="1" fill="none" />
-              <circle cx="70.35" cy="61.75" r="23.5" stroke="currentColor" strokeWidth="1" fill="none" />
-              <circle cx="50" cy="73.5" r="23.5" stroke="currentColor" strokeWidth="1" fill="none" />
-              <circle cx="29.65" cy="61.75" r="23.5" stroke="currentColor" strokeWidth="1" fill="none" />
-              <circle cx="29.65" cy="38.25" r="23.5" stroke="currentColor" strokeWidth="1" fill="none" />
-            </svg>
+            <img src="/logo.png" alt="Taintra Logo" className="w-full h-full object-contain" />
           </div>
 
           <p className="text-xl font-playfair text-white mb-4">Taintra - AI Cosmic Wisdom</p>
