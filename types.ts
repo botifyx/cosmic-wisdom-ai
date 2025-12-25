@@ -302,9 +302,30 @@ export interface UserContext {
 export type UserState = 'guest' | 'trial' | 'full_access';
 export type AuthView = 'login' | 'register';
 export type Gender = 'Male' | 'Female' | 'Unisex';
+
+export interface SubscriptionPlan {
+  id: string;
+  name: string;
+  prices: { [key: string]: number };
+  interval: 'monthly' | 'yearly';
+  features: string[];
+}
+
+export interface UserSubscription {
+  userId: string;
+  planId: string;
+  status: 'active' | 'created' | 'past_due' | 'cancelled' | 'expired';
+  razorpaySubscriptionId: string;
+  currentStart: Date; // or Firestore Timestamp
+  currentEnd: Date;   // or Firestore Timestamp
+  currency: string;
+  amount: number;
+}
+
 export interface LoggedInUser { 
   name: string; 
   email: string; 
   state: UserState; 
-  gender: Gender; 
+  gender: Gender;
+  subscription?: UserSubscription;
 }

@@ -27,8 +27,11 @@ import FullReport from './components/FullReport';
 import { features } from './features';
 import { getUserContextInfo } from './services/deviceInfoService';
 import { generateComprehensiveReport } from './services/geminiService';
-import { auth } from './services/firebase';
+import { auth, db } from './services/firebase';
+import { getSubscription } from './services/subscription';
+import { UserSubscription } from './types';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
+import Modal, { ModalType } from './components/ui/Modal';
 
 const App: React.FC = () => {
   const [activeFeature, setActiveFeature] = useState<FeatureId>(FeatureId.HOME);
@@ -52,6 +55,28 @@ const App: React.FC = () => {
   const [activePackage, setActivePackage] = useState<Package | null>(null);
   const [fullReportData, setFullReportData] = useState<CombinedAnalysisReport | null>(null);
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
+  
+  // Generic Modal State
+  const [modalState, setModalState] = useState<{
+      isOpen: boolean;
+      type: ModalType;
+      title: string;
+      message: string;
+      onAction?: () => void;
+  }>({
+      isOpen: false,
+      type: 'info',
+      title: '',
+      message: ''
+  });
+
+  const openModal = (type: ModalType, title: string, message: string, onAction?: () => void) => {
+      setModalState({ isOpen: true, type, title, message, onAction });
+  };
+
+  const closeModal = () => {
+      setModalState(prev => ({ ...prev, isOpen: false }));
+  };
 
   // Fetch user context on load
   useEffect(() => {
@@ -75,30 +100,29 @@ const App: React.FC = () => {
             const users = JSON.parse(localStorage.getItem('taintra-users') || '{}');
             const storedUser = users[email];
 
-            if (storedUser) {
-                setUserName(storedUser.name);
-                setUserState(storedUser.state);
-                setUserEmail(storedUser.email);
-                setUserGender(storedUser.gender || 'Unisex');
-            } else {
-                // If not in local DB (e.g. cleared storage or fresh OAuth), init as trial
-                 setUserName(name);
-                 setUserEmail(email);
-                 setUserState('trial');
-                 setUserGender('Unisex');
-                 
-                 // Sync to mock DB for consistency
-                 users[email] = {
-                     name,
-                     email,
-                     state: 'trial',
-                     gender: 'Unisex',
-                     provider: 'firebase'
-                 };
-                 localStorage.setItem('taintra-users', JSON.stringify(users));
-            }
-            // Keep session storage for legacy compatibility
-            localStorage.setItem('taintra-session', JSON.stringify({ name, email, state: storedUser?.state || 'trial', gender: storedUser?.gender || 'Unisex' }));
+            // Fetch subscription from Firestore
+            getSubscription(user.uid).then((sub) => {
+                let derivedState: UserState = 'guest'; // default
+                if (sub && sub.status === 'active') {
+                    derivedState = 'full_access';
+                } else {
+                    // Fallback to local storage or trial logic
+                    derivedState = storedUser?.state || 'trial';
+                }
+                
+                setUserState(derivedState);
+                setUserName(name);
+                setUserEmail(email);
+                setUserGender(storedUser?.gender || 'Unisex');
+                
+                // Update local session
+                localStorage.setItem('taintra-session', JSON.stringify({ 
+                    name, 
+                    email, 
+                    state: derivedState, 
+                    gender: storedUser?.gender || 'Unisex' 
+                }));
+            });
 
         } else {
             // User is signed out.
@@ -211,7 +235,9 @@ const App: React.FC = () => {
     // Update session
     localStorage.setItem('taintra-session', JSON.stringify({ name: userName, email: userEmail, state: updatedState, gender: userGender }));
     
-    alert("Purchase successful! You've unlocked your full cosmic report.");
+    localStorage.setItem('taintra-session', JSON.stringify({ name: userName, email: userEmail, state: updatedState, gender: userGender }));
+    
+    openModal('success', 'Purchase Successful', "You've unlocked your full cosmic report. The stars are aligned for you!");
     
     // Transition from Trial Report to Package Wizard immediately if a package was selected
     if (trialPackage) {
@@ -269,7 +295,7 @@ const App: React.FC = () => {
     switch (activeFeature) {
       case FeatureId.HOME: return <HeroSection onFeatureSelect={handleNavClick} />;
       case FeatureId.TOUR: return <Tour onFeatureSelect={handleNavClick} />;
-      case FeatureId.PACKAGES: return <Packages onSelectPackage={handleSelectPackage} userState={userState} />;
+      case FeatureId.PACKAGES: return <Packages onSelectPackage={handleSelectPackage} userState={userState} userCountry={userContext?.geolocation?.country} />;
       case FeatureId.PALMISTRY: return <PalmReading onSuggestTattoo={handleSuggestTattoo} onSuggestArt={handleSuggestArt} userGender={userGender} userContext={userContext} />;
       case FeatureId.FACE_READING: return <FaceReading onSuggestTattoo={handleSuggestTattoo} onSuggestArt={handleSuggestArt} userGender={userGender} userContext={userContext} />;
       case FeatureId.HANDWRITING_ANALYSIS: return <HandwritingAnalysis onSuggestTattoo={handleSuggestTattoo} onSuggestArt={handleSuggestArt} userGender={userGender} userContext={userContext} />;
@@ -320,6 +346,15 @@ const App: React.FC = () => {
             onCancel={() => setShowPackageWizard(false)} 
           />
       )}
+
+      <Modal 
+        isOpen={modalState.isOpen}
+        onClose={closeModal}
+        type={modalState.type}
+        title={modalState.title}
+        message={modalState.message}
+        onAction={modalState.onAction}
+      />
     </div>
   );
 };
